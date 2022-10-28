@@ -10,7 +10,7 @@
 		if (boardData == NULL) // If the allocation failed
 			exit(1);		   // end program with code 1
 		for (int i = 0; i < size * size; i++)
-			boardData[i] = 'a';
+			boardData[i] = ' ';
 	}
 
 	Board::~Board() {
@@ -74,6 +74,7 @@
 	// Create and replace board
 	void Game::newBoard(const int size) {
 		board = Board::Board(size);
+		isBlacksTurn = true;
 	}
 
 	Board* Game::getBoard() {
