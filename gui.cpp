@@ -1,16 +1,16 @@
 #include "gui.h"
+#include "go.h"
 #include "conio2.h"
 
 #define TITLE "Krzysztof, Nasuta, 193328"
 
-GUI::GUI() {
+Gui::Gui() {
 	settitle(TITLE);
 	_setcursortype(_NOCURSOR);
-	getch();
 }
 
-GUI::~GUI()
+Gui::~Gui()
 {
 	_setcursortype(_NORMALCURSOR);
-	cputs("Program terminated");
+	cputs("\n\nProgram terminated\n");
 }

@@ -1,8 +1,8 @@
 #pragma once
 
-class GUI
+class Gui
 {
 public:
-	GUI();
-	~GUI();
+	Gui();
+	~Gui();
 };
