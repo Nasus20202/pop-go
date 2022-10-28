@@ -128,10 +128,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="conio2.cpp" />
+    <ClCompile Include="go.cpp" />
+    <ClCompile Include="gui.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="conio2.h" />
+    <ClInclude Include="go.h" />
+    <ClInclude Include="gui.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
