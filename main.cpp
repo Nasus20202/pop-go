@@ -10,9 +10,5 @@ int main() {
 #endif
 	Gui gui = Gui::Gui();
 	Game game = Game::Game(7);
-	Board board = Board::Board(7);
-	board.set(0, 0, 'X');
-	board.set(0, 1, 'X');
-	board.set(0, 2, 'X');
 	return 0;
 }

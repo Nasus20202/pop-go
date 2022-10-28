@@ -18,9 +18,12 @@ public:
 class Game {
 private:
 	Board board;
-	bool isBlacksTrun; // Black always go first
+	bool isBlacksTurn; // Black always go first
 public:
 	Game(const int size = DEFAULT_SIZE);
 	~Game();
+	void newBoard(const int size = DEFAULT_SIZE);
+	Board* getBoard();
+	void setBoard(const Board *board);
 };
 
