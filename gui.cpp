@@ -12,8 +12,11 @@
 #define FOREGROUND BLACK
 
 void Gui::init() {
-	settitle(TITLE);
-	_setcursortype(_NOCURSOR);
+	printBoard();
+}
+
+void Gui::frame() {
+	
 }
 
 // Print the board on the screen
@@ -58,35 +61,12 @@ void Gui::printBoard() {
 }
 
 Gui::Gui() {
+	settitle(TITLE);
+	_setcursortype(_NOCURSOR);
 	game = Game::Game(DEFAULT_SIZE);
-	init();
-	Board board = Board::Board(DEFAULT_SIZE);
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0; j < 5; j++)
-			board.set(i, j, WHITE_STATE);
-	}
-	board.set(1, 1, BLACK_STATE);
-	board.set(1, 2, BLACK_STATE);
-	board.set(1, 3, BLACK_STATE);
-	board.set(2, 3, BLACK_STATE);
-	board.set(1, 2, BLACK_STATE);
-	board.set(2, 2, EMPTY_STATE);
-	board.set(2, 4, EMPTY_STATE);
-	game.setBoard(&board);
-	printBoard();
-	int n = game.getBoard()->countLiberties(1, 1);
-	//getch();
-	gotoxy(2, 10);
-	if (game.placeStone(1, 1))
-		cputs("Valid move");
-	else
-		cputs("Invalid move");
-	n = game.getBoard()->countLiberties(1, 1);
-	printBoard();
 }
 
 Gui::~Gui()
 {
 	_setcursortype(_NORMALCURSOR);
-	cputs("\n\nProgram terminated\n");
 }

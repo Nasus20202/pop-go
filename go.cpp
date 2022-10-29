@@ -151,7 +151,16 @@
 
 	// Check if the move is legal (free space, inside board, has liberties)
 	bool Game::checkIfLegalMove(const int x, const int y) {
+		int size = board.getSize();
+		if (x < 0 || x > size - 1 || y < 0 || y > size - 1) // Check for overflow
+			return false;
 		if (board.get(x, y) != EMPTY_STATE)
+			return false;
+		Board tempBoard = Board::Board(size);
+		tempBoard = board; // Just to have a new pointer
+		char color = isBlacksTurn ? BLACK_STATE : WHITE_STATE;
+		tempBoard.set(x, y, color);
+		if (tempBoard.countLiberties(x, y) == 0)
 			return false;
 		return true;
 	}

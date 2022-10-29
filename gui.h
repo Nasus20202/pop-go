@@ -5,9 +5,10 @@ class Gui
 {
 private:
 	Game game;
-	void init();
 	void printBoard();
+	void frame();
 public:
 	Gui();
 	~Gui();
+	void init();
 };

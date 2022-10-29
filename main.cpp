@@ -9,5 +9,6 @@ int main() {
 	Tests tests = Tests(); // Run tests
 	tests.runTests();      // only for development
 	Gui gui = Gui::Gui();  // Initialize main GUI object
+	gui.init();
 	return 0;
 }
