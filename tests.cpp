@@ -38,11 +38,19 @@ private:
 		game.placeStone(2, 5);
 		int thirdLiberties = game.getBoard()->countLiberties(1, 2);
 		assert(firstMove == false && firstLiberties == 2 && secondMove == true && firstColor == BLACK_STATE && secondLiberties == 1 && thirdLiberties == 3);
-		
+
+	}
+	void liberties1() {
+		Board board = Board::Board(10);
+		for (int i = 1; i < 10; i++) {
+			board.set(5, i, WHITE_STATE);
+		}
+		assert(board.countLiberties(5, 2) == 19);
 	}
 public:
 	void runTests() {
 		placeStones0();
 		liberties0();
+		liberties1();
 	}
 };
