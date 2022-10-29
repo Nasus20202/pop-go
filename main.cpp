@@ -10,5 +10,10 @@ int main() {
 #endif
 	Gui gui = Gui::Gui();
 	Game game = Game::Game(7);
+	Board* board = game.getBoard();
+	Board board2 = Board::Board(7);
+	board->set(0, 0, 'X');
+	board2[0][0] = 'X';
+	std::cout << (*board == board2) << std::endl;
 	return 0;
 }

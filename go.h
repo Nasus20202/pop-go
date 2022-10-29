@@ -8,10 +8,12 @@ private:
 public:
 	Board(int size = DEFAULT_SIZE);
 	~Board();
-	Board& operator=(const Board& other);
-	char get(const int row, const int col);
-	void set(const int row, const int col, const char c);
-	char* operator[](const int index);
+	Board& operator=(const Board& other); // Copy constructor
+	char* operator[](const int index); // Alows to access the board as a 2D array
+	bool operator==(const Board& rightBoard); // Compares two boards
+	
+	char get(const int row, const int col); // Get the value of a field on the board (row, column)
+	void set(const int row, const int col, const char c); // Set the value of a field on the board (row, column, value)
 	int getSize();
 };
 

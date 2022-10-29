@@ -33,6 +33,23 @@
 		return *this;
 	}
 
+	// Alows to access the board as a 2D array
+	char* Board::operator[](const int index) 
+	{
+		return &boardData[(index % size) * size]; // Pointer to first element of row
+	}
+	
+	// Compares two boards
+	bool Board::operator==(const Board& rightBoard) {
+		if (size != rightBoard.size)
+			return false;
+		for (int i = 0; i < size * size; i++)
+			if (boardData[i] != rightBoard.boardData[i])
+				return false;
+		return true;
+	}
+	
+
 	// Get the value of a field on the board (row, column)
 	char Board::get(const int row, const int col) {
 		int index = row * size + col;
@@ -45,11 +62,6 @@
 		int index = row * size + col;
 		index %= size*size; // Check for overflow
 		boardData[index] = c;
-	}
-
-	// Alows to access the board as a 2D array
-	char* Board::operator[](const int index) {
-		return &boardData[(index % size) * size]; // Pointer to first element of row
 	}
 	
 	int Board::getSize() {
