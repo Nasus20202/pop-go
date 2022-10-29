@@ -19,6 +19,9 @@ public:
 	char get(const int row, const int col); // Get the value of a field on the board (row, column)
 	void set(const int row, const int col, const char c); // Set the value of a field on the board (row, column, value)
 	int getSize();
+	int countLibertiesNoChain(const int x, const int y); // Count amout of free fields or same color stones around a stone
+	int countLibertiesInChain(const int x, const int y, const char color, Board* tempBoard, bool* visited, int liberties = 0); // Recursive function to count liberties in a chain
+	int countLiberties(const int x, const int y); // Count the liberties of a stone, if stone doesn't exits return -1
 };
 
 class Game {

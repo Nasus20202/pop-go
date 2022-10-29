@@ -2,7 +2,7 @@
 #include "go.h"
 #include "conio2.h"
 
-#define TITLE "Krzysztof, Nasuta, 193328"
+#define TITLE "Krzysztof Nasuta, 193328"
 #define MENU_X 2
 #define MENU_Y 2
 #define BOARD_X 25
@@ -58,19 +58,30 @@ void Gui::printBoard() {
 }
 
 Gui::Gui() {
-	init();
 	game = Game::Game(DEFAULT_SIZE);
+	init();
 	Board board = Board::Board(DEFAULT_SIZE);
-	board.set(0, 1, WHITE_STATE); board.set(1, 0, WHITE_STATE); board.set(1, 2, WHITE_STATE); board.set(2, 1, WHITE_STATE);
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 5; j++)
+			board.set(i, j, WHITE_STATE);
+	}
+	board.set(1, 1, BLACK_STATE);
+	board.set(1, 2, BLACK_STATE);
+	board.set(1, 3, BLACK_STATE);
+	board.set(2, 3, BLACK_STATE);
+	board.set(1, 2, BLACK_STATE);
+	board.set(2, 2, EMPTY_STATE);
+	board.set(2, 4, EMPTY_STATE);
 	game.setBoard(&board);
-	game.placeStone(5, 5);
-	game.placeStone(7, 7);
 	printBoard();
-	getch();
+	int n = game.getBoard()->countLiberties(1, 1);
+	//getch();
+	gotoxy(2, 10);
 	if (game.placeStone(1, 1))
 		cputs("Valid move");
 	else
 		cputs("Invalid move");
+	n = game.getBoard()->countLiberties(1, 1);
 	printBoard();
 }
 

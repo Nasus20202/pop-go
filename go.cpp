@@ -66,9 +66,77 @@
 		return size;
 	}
 
+	// Count amout of free fields or same color stones around a stone
+	int Board::countLibertiesNoChain(const int x, const int y) {
+		char color = get(x, y);
+		if (color == EMPTY_STATE)
+			return -1;
+		int liberties = 0;
+		for (int i = -1; i <= 1; i++)
+			for (int j = -1; j <= 1; j++)
+				if ((i == 0) != (j == 0)) { // Check only horizontal and vertical neighbours, != works as XOR operator for bools 
+					int row = x + i, col = y + j;
+					if (row < 0 || row > size - 1 || col < 0 || col > size - 1) // Check for overflow
+						continue;
+					if (get(row, col) == EMPTY_STATE)
+						liberties++;
+				}
+		return liberties;
+	}
+	
+	// Recursive function to count liberties in a chain
+	int Board::countLibertiesInChain(const int x, const int y, const char color, Board* tempBoard, bool* visited, int liberties) {
+		int size = tempBoard->getSize();
+		if (x < 0 || x > size - 1 || y < 0 || y > size - 1) // Check for overflow
+			return liberties;
+		if (visited[x * size + y]) // If the field was already visited
+			return liberties;
+		visited[x * size + y] = true;
+		const char fieldColor = get(x, y);
+		if (fieldColor == EMPTY_STATE) // If the field is empty
+			return liberties + 1;
+		else if (fieldColor != color) // If the field is not the same color as the chain
+			return liberties;
+		int localLiberties = tempBoard->get(x, y);
+		int neighbourLiberties = 0;
+		for (int i = -1; i <= 1; i++)
+			for (int j = -1; j <= 1; j++)
+				if ((i == 0) != (j == 0)) { // Check only horizontal and vertical neighbours, != works as XOR operator for bools 
+					int row = x + i, col = y + j;
+					neighbourLiberties += countLibertiesInChain(row, col, color, tempBoard, visited, liberties);
+				}
+		if (neighbourLiberties > localLiberties)
+			localLiberties = neighbourLiberties;
+		if(localLiberties > liberties)
+			liberties = localLiberties;
+		return liberties;
+	}
+	
+	// Count the liberties of a stone, if stone doesn't exits return -1
+	int Board::countLiberties(const int x, const int y) {
+		char color = get(x, y);
+		if (color == EMPTY_STATE)
+			return -1;			       // Initialize temporary board used to check for liberties in chains
+		Board tempBoard = Board(size); // max amout of liberties is 4, which is less than capacity of char variable
+		for (int i = 0; i < size; i++) // Calculate liberties of every stone of that color without chaining
+			for (int j = 0; j < size; j++)
+				if (get(i, j) == color) {
+					tempBoard.set(i, j, countLibertiesNoChain(i, j));
+				}
+				else {
+					tempBoard.set(i, j, 0);
+				}
+		bool* visited = (bool*) malloc(size * size * sizeof(bool)); // Allocate memory for the board
+		if (visited == NULL)   // If the allocation failed
+			exit(1);		   // end program with code 1
+		for (int i = 0; i < size * size; i++)
+			visited[i] = false;
+		int liberties = countLibertiesInChain(x, y, color, &tempBoard, visited);
+		free(visited);
+		return liberties;
+	}
+
 #pragma endregion
-
-
 
 #pragma region Game
 
