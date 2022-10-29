@@ -1,5 +1,9 @@
 #pragma once
 #define DEFAULT_SIZE 19
+// Board states naming
+#define WHITE_STATE 'w'
+#define BLACK_STATE 'b'
+#define EMPTY_STATE 'e'
 
 class Board {
 private:
@@ -21,11 +25,16 @@ class Game {
 private:
 	Board board;
 	bool isBlacksTurn; // Black always go first
+	bool checkIfLegalMove(const int x, const int y);
 public:
 	Game(const int size = DEFAULT_SIZE);
 	~Game();
+	
 	void newBoard(const int size = DEFAULT_SIZE);
+	bool placeStone(const int x, const int y);
+
+	bool getCurrentPlayer();
 	Board* getBoard();
-	void setBoard(const Board *board);
+	void setBoard(const Board* board);
 };
 

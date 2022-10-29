@@ -1,19 +1,13 @@
 #include "gui.h"
-#include "go.h"
-#include "conio2.h"
-#include <iostream>
+#include "tests.cpp"
 
 int main() {
 	// if the program is compiled in pure C, then we need to initialize the library ourselves; __cplusplus is defined only if a C++ compiler is used
 #ifndef __cplusplus
 	Conio2_Init();
 #endif
-	Gui gui = Gui::Gui();
-	Game game = Game::Game(7);
-	Board* board = game.getBoard();
-	Board board2 = Board::Board(7);
-	board->set(0, 0, 'X');
-	board2[0][0] = 'X';
-	std::cout << (*board == board2) << std::endl;
+	Tests tests = Tests(); // Run tests
+	tests.runTests();      // only for development
+	Gui gui = Gui::Gui();  // Initialize main GUI object
 	return 0;
 }

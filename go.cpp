@@ -10,7 +10,7 @@
 		if (boardData == NULL) // If the allocation failed
 			exit(1);		   // end program with code 1
 		for (int i = 0; i < size * size; i++)
-			boardData[i] = ' ';
+			boardData[i] = EMPTY_STATE;
 	}
 
 	Board::~Board() {
@@ -52,15 +52,13 @@
 
 	// Get the value of a field on the board (row, column)
 	char Board::get(const int row, const int col) {
-		int index = row * size + col;
-		index %= size*size; // Check for overflow
+		int index = (row % size) * size + (col % size); // Calculate index of the field, check for overflow
 		return boardData[index];
 	}
 
 	// Set the value of a field on the board (row, column, value)
 	void Board::set(const int row, const int col, const char c) {
-		int index = row * size + col;
-		index %= size*size; // Check for overflow
+		int index = (row % size) * size + (col % size);
 		boardData[index] = c;
 	}
 	
@@ -83,17 +81,40 @@
 
 	}
 
+	// Check if the move is legal (free space, inside board, has liberties)
+	bool Game::checkIfLegalMove(const int x, const int y) {
+		if (board.get(x, y) != EMPTY_STATE)
+			return false;
+		return true;
+	}
+	
 	// Create and replace board
 	void Game::newBoard(const int size) {
 		board = Board::Board(size);
 		isBlacksTurn = true;
 	}
 
+	// Place new stone with right color
+	bool Game::placeStone(const int x, const int y){
+		if (!checkIfLegalMove(x, y))
+			return false;
+		board.set(x, y, isBlacksTurn ? BLACK_STATE : WHITE_STATE);
+		isBlacksTurn = !isBlacksTurn;
+		return true;
+	}
+
+	// Get current player, true = black, false = white
+	bool Game::getCurrentPlayer() {
+		return isBlacksTurn;
+	}
+
+	// Get pointer to the board object
 	Board* Game::getBoard() {
 		return &board;
 	}
 
-	void Game::setBoard(const Board *board) {
+	// Update board
+	void Game::setBoard(const Board* board) {
 		this->board = *board;
 	}
 
