@@ -36,6 +36,7 @@ void Gui::init() {
 	// Prepare console output style
 	settitle(TITLE);
 	_setcursortype(_NOCURSOR);
+	textcolor(THEME_COLOR);
 	
 	char key = -1;
 	while (key != 'q') {
@@ -49,7 +50,8 @@ void Gui::init() {
 }
 
 void Gui::frame(const char key) {
-	if (key == 0) { // Pressed key is a special key - arrow
+	// Pressed key is a special key - arrow
+	if (key == 0) { 
 		switch (getch()) {
 		case 0x48:
 			y--; break;
@@ -70,59 +72,80 @@ void Gui::frame(const char key) {
 		else if (y > size - 1)
 			y = size - 1;
 	}
-	printBoard();
-	printCursor();
+	else if (key == '1') {
+		bool validMove = game.checkIfLegalMove(y, x);
+		if (validMove) {
+			Board board = Board::Board(game.getBoard()->getSize());
+			board = *game.getBoard();
+			board.set(y, x, game.getCurrentPlayer());
+			printBoard(&board, false);
+			char confirm = getch();
+			// Confirmation by clicking enter
+			if (confirm == 0x0d) {
+				game.placeStone(y, x);
+			}
+		}
+	}
+	printGameBoard();
 }
 
 // Print the board on the screen
-void Gui::printBoard() {
-	const int size = game.getBoard()->getSize();
-	for (int x = 0; x < size; x++) {
-		for (int y = 0; y < size; y++) {
-			textbackground(BACKGROUND); // Background color
-			// Create border
-			if (x == 0) {
-				textcolor(FOREGROUND);
-				gotoxy(BOARD_X + 2 * x - 1, BOARD_Y + y);
-				putch('_');
+void Gui::printBoard(Board* board, bool cursor) {
+	const int size = board->getSize();
+	// Print whole board
+	if (size <= BOARD_SIZE) {
+		for (int localX = 0; localX < size; localX++) {
+			for (int localY = 0; localY < size; localY++) {
+				textbackground(BACKGROUND); // Background color
+				// Create border
+				if (localX == 0) {
+					textcolor(FOREGROUND);
+					gotoxy(BOARD_X + 2 * localX - 1, BOARD_Y + localY);
+					putch('_');
+				}
+				if (localY == size - 1) {
+					textcolor(FOREGROUND);
+					gotoxy(BOARD_X + 2 * localX, BOARD_Y + localY + 1);
+					cputs("| ");
+				}
+				if (localX == 0 && localY == size - 1) {
+					gotoxy(BOARD_X + 2 * localX - 1, BOARD_Y + localY + 1);
+					putch(' ');
+				}
+				gotoxy(BOARD_X + 2 * localX, BOARD_Y + localY); // Move the cursor to the right position, 2*x for nice output
+				char c = board->get(localY, localX); // get state of field
+				if (c == WHITE_STATE) {
+					textbackground(WHITE); textcolor(WHITE);
+					putch(' ');
+				}
+				else if (c == BLACK_STATE) {
+					textbackground(BLACK); textcolor(BLACK);
+					putch(' ');
+				}
+				else {
+					textcolor(FOREGROUND); putch('|');
+				}
+				gotoxy(BOARD_X + 2 * localX + 1, BOARD_Y + localY); putch('_'); // Stone is 2x1 chars
 			}
-			if (y == size - 1) {
-				textcolor(FOREGROUND);
-				gotoxy(BOARD_X + 2 * x, BOARD_Y + y + 1);
-				cputs("| ");
-			}
-			if (x == 0 && y == size - 1) {
-				gotoxy(BOARD_X + 2 * x - 1, BOARD_Y + y + 1);
-				putch(' ');
-			}
-			gotoxy(BOARD_X + 2*x, BOARD_Y + y); // Move the cursor to the right position, 2*x for nice output
-			char c = game.getBoard()->get(y, x); // get state of field
-			if (c == WHITE_STATE) {
-				textbackground(WHITE); textcolor(WHITE);
-				putch(' ');
-			}
-			else if (c == BLACK_STATE) {
-				textbackground(BLACK); textcolor(BLACK);
-				putch(' ');
-			}
-			else {
-				textcolor(FOREGROUND); putch('|');
-			}
-			gotoxy(BOARD_X + 2*x + 1, BOARD_Y + y); putch('_'); // Stone is 2x1 chars
 		}
+		// Print cursor
+		if (cursor) {
+			textbackground(THEME_COLOR);
+			gotoxy(BOARD_X + 2 * x, BOARD_Y + y);
+			putch(' ');
+		}
+	} 
+	// Print part of the board
+	else {
+		
 	}
-	textcolor(LIGHTGRAY);
+	textcolor(THEME_COLOR);
 	textbackground(BLACK); //reset colors
 }
 
-// Print the cursor on the screen
-void Gui::printCursor() {
-	textbackground(THEME_COLOR);
-	gotoxy(BOARD_X + 2 * x, BOARD_Y + y);
-	putch(' ');
-	gotoxy(BOARD_X + 2 * x + 1, BOARD_Y + y);
-	putch(' ');
-	textbackground(BACKGROUND);
+// Print the game's board
+void Gui::printGameBoard(bool cursor) {
+	printBoard(game.getBoard(), cursor);
 }
 
 Gui::Gui() {

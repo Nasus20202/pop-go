@@ -218,9 +218,11 @@
 		return true;
 	}
 
-	// Get current player, true = black, false = white
-	bool Game::getCurrentPlayer() {
-		return isBlacksTurn;
+	// Get current player, BLACK_STATE or WHITE_STATE
+	char Game::getCurrentPlayer() {
+		if (isBlacksTurn)
+			return BLACK_STATE;
+		return WHITE_STATE;
 	}
 
 	// Returns points of one player

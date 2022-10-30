@@ -16,8 +16,8 @@ class Gui
 private:
 	Game game;
 	int x, y;
-	void printBoard();
-	void printCursor();
+	void printBoard(Board* board, bool cursor = true);
+	void printGameBoard(bool cursor = true);
 	void frame(const char key); // Render a new frame
 public:
 	Gui();

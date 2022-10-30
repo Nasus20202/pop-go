@@ -1,5 +1,5 @@
 #pragma once
-#define DEFAULT_SIZE 19
+#define DEFAULT_SIZE 5
 #define MAX_SIZE 100
 // Board states naming
 #define WHITE_STATE 'w'
@@ -30,7 +30,6 @@ private:
 	Board board;
 	int whitePoints, blackPoints;
 	bool isBlacksTurn; // Black always go first
-	bool checkIfLegalMove(const int x, const int y);
 	void removeAllDeadStones(); // Remove all dead stones from the board
 	void removeDeadStone(const int x, const int y); // Remove a stone and add points
 public:
@@ -39,8 +38,9 @@ public:
 	
 	void newBoard(const int size = DEFAULT_SIZE);
 	bool placeStone(const int x, const int y);
+	bool checkIfLegalMove(const int x, const int y);
 
-	bool getCurrentPlayer();
+	char getCurrentPlayer();
 	int getPoints(const char color);
 	Board* getBoard();
 	void setBoard(const Board* board);
