@@ -10,6 +10,7 @@ void Tests::placeStones0() {
 	game.placeStone(0, 1);
 	assert(game.getBoard()->get(0, 1) == WHITE_STATE);
 }
+
 void Tests::liberties0() {
 	Game game = Game::Game(10);
 	Board board = Board::Board(10);
@@ -40,15 +41,43 @@ void Tests::liberties0() {
 
 }
 void Tests::liberties1() {
-	Board board = Board::Board(10);
-	for (int i = 1; i < 10; i++) {
-		board.set(5, i, WHITE_STATE);
+	Board board = Board::Board(5);
+	for (int i = 1; i < 5; i++) {
+		board.set(2, i, WHITE_STATE);
 	}
-	int liberties = board.countLiberties(5, 2);
-	assert(liberties == 19);
+	board.set(3, 3, WHITE_STATE);
+	int liberties = board.countLiberties(2, 2);
+	assert(liberties == 9);
 }
+void Tests::liberties2() {
+	Board board = Board::Board(6);
+	board.set(3, 4, BLACK_STATE);
+	board.set(2, 3, WHITE_STATE);
+	board.set(1, 3, WHITE_STATE);
+	board.set(2, 4, WHITE_STATE);
+	int liberties = board.countLiberties(2, 3);
+	assert(liberties == 6);
+}
+void Tests::liberties3() {
+	Board board = Board::Board(5);
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			board.set(i, j, BLACK_STATE);
+		}
+	}
+	board.set(1, 1, WHITE_STATE);
+	int firstLiberties = board.countLiberties(1, 1);
+	board.set(1, 2, WHITE_STATE);
+	int secondLiberties = board.countLiberties(1, 1);
+	board.set(1, 3, WHITE_STATE);
+	int thirdLiberties = board.countLiberties(1, 1);
+	assert(firstLiberties == 0 && secondLiberties == 1 && thirdLiberties == 3);
+}
+
 void Tests::runTests() {
 	placeStones0();
 	liberties0();
 	liberties1();
+	liberties2();
+	liberties3();
 }

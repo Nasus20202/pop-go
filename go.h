@@ -9,8 +9,7 @@ class Board {
 private:
 	int size;
 	char* boardData; // the board is a 2D array of chars (char pointer to size*size chars)
-	int countLibertiesNoChain(const int x, const int y); // Count amout of free fields or same color stones around a stone
-	int countLibertiesInChain(const int x, const int y, const char color, Board* tempBoard, bool* visited, int liberties = 0); // Recursive function to count liberties in a chain
+	void recursiveLiberties(const int x, const int y, char color, int* visited); // Recursive function for counting liberties
 public:
 	Board(int size = DEFAULT_SIZE);
 	~Board();
