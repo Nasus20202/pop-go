@@ -6,10 +6,11 @@
 #define MENU_Y 2
 #define BOARD_X 25
 #define BOARD_Y 2
-#define BOARD_SIZE 3
+#define BOARD_SIZE 19
 #define BACKGROUND DARKGRAY
 #define FOREGROUND BLACK
 #define THEME_COLOR LIGHTRED
+#define CONSOLE_COLOR LIGHTGRAY
 
 class Gui
 {

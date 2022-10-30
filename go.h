@@ -1,5 +1,5 @@
 #pragma once
-#define DEFAULT_SIZE 5
+#define DEFAULT_SIZE 19
 #define MAX_SIZE 100
 // Board states naming
 #define WHITE_STATE 'w'

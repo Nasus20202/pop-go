@@ -37,6 +37,8 @@ void Gui::init() {
 	settitle(TITLE);
 	_setcursortype(_NOCURSOR);
 	textcolor(THEME_COLOR);
+	textbackground(LIGHTGRAY);
+	clrscr();
 	
 	char key = -1;
 	while (key != 'q') {
@@ -85,6 +87,19 @@ void Gui::frame(const char key) {
 				game.placeStone(y, x);
 			}
 		}
+	}
+	else if (key == 'n') {
+		int n = 0; char c = 0;
+		while (c != 0x0d) {
+			c = getch();
+			if (c >= '0' && c <= '9') {
+				n *= 10; n += c - '0';
+			}
+		}
+		game.newBoard(n);
+		textbackground(LIGHTGRAY);
+		x = 0, y = 0;
+		clrscr();
 	}
 	printGameBoard();
 }
