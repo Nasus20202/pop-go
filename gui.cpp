@@ -1,35 +1,77 @@
 #include "gui.h"
 #include "go.h"
 #include "conio2.h"
+#include <stdlib.h>
 
-#define TITLE "Krzysztof Nasuta, 193328"
-#define MENU_X 2
-#define MENU_Y 2
-#define BOARD_X 25
-#define BOARD_Y 2
-#define BOARD_SIZE 19
-#define BACKGROUND DARKGRAY
-#define FOREGROUND BLACK
-
-void Gui::init() {
-	Board board = Board::Board(7);
-	board.set(0, 1, WHITE_STATE); board.set(1, 0, WHITE_STATE); board.set(2, 1, WHITE_STATE); board.set(0, 2, WHITE_STATE); board.set(2, 2, WHITE_STATE); board.set(3, 1, WHITE_STATE); board.set(4, 2, WHITE_STATE);
-	game.setBoard(&board);
-	game.placeStone(1, 1);
-	printBoard();
-	getch();
-	game.placeStone(3, 3);
-	printBoard();
-	getch();
-	game.placeStone(1, 2);
-	printBoard();
-	getch();
-	game.placeStone(1, 3);
-	printBoard();
+// Represent int as a char array (string), returned pointer has to be freed
+char* intToString(long long n) {
+	char* string = NULL; int size = 0; bool negative = n < 0 ? true : false;
+	if (negative) // Remove minus from number if negative
+		n = -n;
+	while (n > 0) {
+		char digit = n % 10 + '0';
+		n /= 10;
+		string = (char*)realloc(string, sizeof(char) * (size+1));
+		if (string == NULL)
+			exit(1);
+		string[size] = digit; size++;
+	}
+	if (negative) { // Add minus to the beginning of the string
+		string = (char*)realloc(string, sizeof(char) * (size + 1));
+		if (string == NULL)
+			exit(1);
+		string[size] = '-'; size++;
+	}
+	char* stringReversed = (char*)malloc(sizeof(char) * (size + 1));
+	if (stringReversed == NULL)
+		exit(1);
+	for (int i = 0; i < size; i++)
+		stringReversed[i] = string[size - i - 1];
+	stringReversed[size] = '\0';
+	free(string);
+	return stringReversed;
 }
 
-void Gui::frame() {
+void Gui::init() {
+	// Prepare console output style
+	settitle(TITLE);
+	_setcursortype(_NOCURSOR);
 	
+	char key = -1;
+	while (key != 'q') {
+		frame(key);
+		key = getch();
+	}
+	
+	// Restore console output style
+	cputs("\n\n");
+	_setcursortype(_NORMALCURSOR);
+}
+
+void Gui::frame(const char key) {
+	if (key == 0) { // Pressed key is a special key - arrow
+		switch (getch()) {
+		case 0x48:
+			y--; break;
+		case 0x50:
+			y++; break;
+		case 0x4b:
+			x--; break;
+		case 0x4d:
+			x++; break;
+		}
+		const int size = game.getBoard()->getSize();
+		if(x < 0)
+			x = 0;
+		else if(x > size - 1)
+			x = size - 1;
+		if(y < 0)
+			y = 0;
+		else if (y > size - 1)
+			y = size - 1;
+	}
+	printBoard();
+	printCursor();
 }
 
 // Print the board on the screen
@@ -40,12 +82,12 @@ void Gui::printBoard() {
 			textbackground(BACKGROUND); // Background color
 			// Create border
 			if (x == 0) {
-				textcolor(BLACK);
+				textcolor(FOREGROUND);
 				gotoxy(BOARD_X + 2 * x - 1, BOARD_Y + y);
 				putch('_');
 			}
 			if (y == size - 1) {
-				textcolor(BLACK);
+				textcolor(FOREGROUND);
 				gotoxy(BOARD_X + 2 * x, BOARD_Y + y + 1);
 				cputs("| ");
 			}
@@ -73,14 +115,22 @@ void Gui::printBoard() {
 	textbackground(BLACK); //reset colors
 }
 
+// Print the cursor on the screen
+void Gui::printCursor() {
+	textbackground(THEME_COLOR);
+	gotoxy(BOARD_X + 2 * x, BOARD_Y + y);
+	putch(' ');
+	gotoxy(BOARD_X + 2 * x + 1, BOARD_Y + y);
+	putch(' ');
+	textbackground(BACKGROUND);
+}
+
 Gui::Gui() {
-	settitle(TITLE);
-	_setcursortype(_NOCURSOR);
 	game = Game::Game(DEFAULT_SIZE);
+	x = 0, y = 0;
 }
 
 Gui::~Gui()
 {
-	cputs("\n\n");
-	_setcursortype(_NORMALCURSOR);
+
 }

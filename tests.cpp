@@ -1,7 +1,6 @@
 #include <cassert>
 #include "go.h"
 #include "tests.h"
-#pragma once
 
 void Tests::placeStones0() {
 	Game game = Game::Game(5);
@@ -74,10 +73,28 @@ void Tests::liberties3() {
 	assert(firstLiberties == 0 && secondLiberties == 1 && thirdLiberties == 3);
 }
 
+void Tests::capture0() {
+	Game game = Game::Game(7);
+	Board board = Board::Board(7);
+	board.set(0, 1, WHITE_STATE); board.set(1, 0, WHITE_STATE); board.set(2, 1, WHITE_STATE); board.set(0, 2, WHITE_STATE); board.set(2, 2, WHITE_STATE); board.set(5, 2, WHITE_STATE); board.set(6, 3, WHITE_STATE);
+	game.setBoard(&board);
+	game.placeStone(1, 1);
+	game.placeStone(4, 3);
+	game.placeStone(1, 2);
+	game.placeStone(1, 3);
+	game.placeStone(5, 3);
+	game.placeStone(5, 4);
+	int state0 = game.getBoard()->get(1, 1);
+	int state1 = game.getBoard()->get(1, 2);
+	int state2 = game.getBoard()->get(5, 3);
+	assert(state0 == EMPTY_STATE && state1 == EMPTY_STATE && state2 == EMPTY_STATE);
+}
+
 void Tests::runTests() {
 	placeStones0();
 	liberties0();
 	liberties1();
 	liberties2();
 	liberties3();
+	capture0();
 }

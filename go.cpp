@@ -4,7 +4,7 @@
 #pragma region Board
 
 	Board::Board(int size) {
-		size = size < 2 ? 2 : size; size = size > 1000 ? 1000 : size; // size must be between 2 and 1000 (inclusive)
+		size = size < 2 ? 2 : size; size = size > MAX_SIZE ? MAX_SIZE : size; // size must be between 2 and 1000 (inclusive)
 		this->size = size;
 		boardData = (char*)malloc(size * size * sizeof(char)); // Allocate memory for the board
 		if (boardData == NULL) // If the allocation failed
