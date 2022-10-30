@@ -137,7 +137,40 @@ void Gui::printBoard(Board* board, bool cursor) {
 	} 
 	// Print part of the board
 	else {
-		
+		int startX = x - BOARD_SIZE / 2, startY = y - BOARD_SIZE / 2; // Print board starting from startX and startY
+		if(startX < 0)
+			startX = 0;
+		else if (startX > size - BOARD_SIZE)
+			startX = size - BOARD_SIZE;
+		if (startY < 0)
+			startY = 0;
+		else if(startY > size - BOARD_SIZE)
+			startY = size - BOARD_SIZE;
+		for (int localX = startX; localX < startX + BOARD_SIZE; localX++) {
+			for (int localY = startY; localY < startY + BOARD_SIZE; localY++) {
+				textbackground(BACKGROUND);
+				gotoxy(BOARD_X + 2 * (localX - startX), BOARD_Y + (localY - startY)); // Move the cursor to the right position, 2*x for nice output
+				char c = board->get(localY, localX); // get state of field
+				if (c == WHITE_STATE) {
+					textbackground(WHITE); textcolor(WHITE);
+					putch(' ');
+				}
+				else if (c == BLACK_STATE) {
+					textbackground(BLACK); textcolor(BLACK);
+					putch(' ');
+				}
+				else {
+					textcolor(FOREGROUND); putch('|');
+				}
+				gotoxy(BOARD_X + 2 * (localX - startX) + 1, BOARD_Y + (localY - startY)); putch('_'); // Stone is 2x1 chars
+			}
+		}
+		// Print cursor
+		if (cursor) {
+			textbackground(THEME_COLOR);
+			gotoxy(BOARD_X + 2 * (x - startX), BOARD_Y + (y - startY));
+			putch(' ');
+		}
 	}
 	textcolor(THEME_COLOR);
 	textbackground(BLACK); //reset colors
