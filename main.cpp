@@ -1,5 +1,5 @@
 #include "gui.h"
-#include "tests.cpp"
+#include "tests.h"
 
 int main() {
 	// if the program is compiled in pure C, then we need to initialize the library ourselves; __cplusplus is defined only if a C++ compiler is used
