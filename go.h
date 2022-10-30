@@ -9,7 +9,7 @@ class Board {
 private:
 	int size;
 	char* boardData; // the board is a 2D array of chars (char pointer to size*size chars)
-	void recursiveLiberties(const int x, const int y, char color, int* visited); // Recursive function for counting liberties
+	void recursiveLiberties(const int x, const int y, char color, char* visited); // Recursive function for counting liberties
 public:
 	Board(int size = DEFAULT_SIZE);
 	~Board();

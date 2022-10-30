@@ -67,7 +67,7 @@
 	}
 
 	// Recursive function for counting liberties, marks every liberty as 1 in visited array
-	void Board::recursiveLiberties(const int x, const int y, char color, int* visited) {
+	void Board::recursiveLiberties(const int x, const int y, char color, char* visited) {
 		int size = getSize(); int index = x * size + y;
 		if (x < 0 || x > size - 1 || y < 0 || y > size - 1) // Check if the field is on the board
 			return;
@@ -97,7 +97,7 @@
 		char color = get(x, y);
 		if (color == EMPTY_STATE)
 			return -1;
-		int* visited = (int*)malloc(size * size * sizeof(int)); // Allocate memory for visited array
+		char* visited = (char*)malloc(size * size * sizeof(char)); // Allocate memory for visited array
 		if (visited == NULL) // If the allocation failed
 			exit(1);
 		for (int i = 0; i < size * size; i++) // 0 - unvisited, -1 - not free, 1 - free
