@@ -21,13 +21,17 @@ public:
 	void set(const int row, const int col, const char c); // Set the value of a field on the board (row, column, value)
 	int getSize();
 	int countLiberties(const int x, const int y); // Count the liberties of a stone, if stone doesn't exits return -1
+	int* generateLibertiesMatrix(); // Count liberties of every stone, -1 if no stone
 };
 
 class Game {
 private:
 	Board board;
+	int whitePoints, blackPoints;
 	bool isBlacksTurn; // Black always go first
 	bool checkIfLegalMove(const int x, const int y);
+	void removeAllDeadStones(); // Remove all dead stones from the board
+	void removeDeadStone(const int x, const int y); // Remove a stone and add points
 public:
 	Game(const int size = DEFAULT_SIZE);
 	~Game();
@@ -36,6 +40,7 @@ public:
 	bool placeStone(const int x, const int y);
 
 	bool getCurrentPlayer();
+	int getPoints(const char color);
 	Board* getBoard();
 	void setBoard(const Board* board);
 };

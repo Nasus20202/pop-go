@@ -12,6 +12,19 @@
 #define FOREGROUND BLACK
 
 void Gui::init() {
+	Board board = Board::Board(7);
+	board.set(0, 1, WHITE_STATE); board.set(1, 0, WHITE_STATE); board.set(2, 1, WHITE_STATE); board.set(0, 2, WHITE_STATE); board.set(2, 2, WHITE_STATE); board.set(3, 1, WHITE_STATE); board.set(4, 2, WHITE_STATE);
+	game.setBoard(&board);
+	game.placeStone(1, 1);
+	printBoard();
+	getch();
+	game.placeStone(3, 3);
+	printBoard();
+	getch();
+	game.placeStone(1, 2);
+	printBoard();
+	getch();
+	game.placeStone(1, 3);
 	printBoard();
 }
 
@@ -68,5 +81,6 @@ Gui::Gui() {
 
 Gui::~Gui()
 {
+	cputs("\n\n");
 	_setcursortype(_NORMALCURSOR);
 }
