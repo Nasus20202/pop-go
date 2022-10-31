@@ -97,7 +97,7 @@ void Gui::frame(const char key) {
 	}
 	// Create new game
 	else if (key == 'n') {
-		char option = 0, c = 0, n;
+		char option = 0, c = 0; int n;
 		char basicSizes[] = { 9, 13, 19 }; // basic sizes of board
 		int basicSizesCount = sizeof(basicSizes) / sizeof(char); int customInputX, customInputY; // For custom number input location
 		// Wait for enter or esc
@@ -117,7 +117,7 @@ void Gui::frame(const char key) {
 					cputs("    > ");
 				else
 					cputs("      ");
-				cputs(intToString(basicSizes[i])); cputs("x"); cputs(intToString(basicSizes[i]));
+				printNumber(basicSizes[i]); cputs("x"); printNumber(basicSizes[i]);
 				popupY++;
 			}
 			gotoxy(popupX, popupY);
@@ -183,7 +183,6 @@ void Gui::printMenu() {
 		gotoxy(menuX, menuY++);
 		cputs(info[i]);
 	}
-	
 }
 
 // Prints points and turn
@@ -196,7 +195,9 @@ void Gui::printStats() {
 	else
 		cputs("   Gracz: Bialy ");
 	gotoxy(STATS_X, STATS_Y+2);
-	cputs("Czarny: "); cputs(intToString(game.getPoints(BLACK_STATE))); cputs("  Bialy: "); cputs(intToString(game.getPoints(WHITE_STATE)));
+	cputs("Czarny: "); printNumber(game.getPoints(BLACK_STATE)); cputs("  Bialy: "); printNumber(game.getPoints(WHITE_STATE));
+	gotoxy(STATS_X, STATS_Y + 4);
+	cputs("   X: "); printNumber(x); cputs("   Y: "); printNumber(y);
 }
 
 // Print the board on the screen
@@ -319,9 +320,7 @@ int Gui::numberInput(const int x, const int y, const char fontColor, const char 
 		for (int i = 0; i < maxLength; i++)
 			cputs(" ");
 		gotoxy(x, y);
-		char* strNumber = intToString(n);
-		cputs(strNumber);
-		free(strNumber);
+		printNumber(n);
 		c = getch();
 		if (c == '\b')
 			n /= 10; // backspace
@@ -336,6 +335,12 @@ int Gui::numberInput(const int x, const int y, const char fontColor, const char 
 	}
 	textcolor(FOREGROUND); textbackground(CONSOLE_COLOR);
 	return n;
+}
+
+void Gui::printNumber(const long long n) {
+	char* str = intToString(n);
+	cputs(str);
+	free(str);
 }
 
 Gui::Gui() {

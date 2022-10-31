@@ -5,7 +5,7 @@
 #define MENU_X 2
 #define MENU_Y 1
 #define STATS_X 5 + MENU_X
-#define STATS_Y 24 + MENU_Y
+#define STATS_Y 22 + MENU_Y
 #define MENU_HEIGHT 30
 #define MENU_WIDTH 30
 #define BOARD_X 40
@@ -33,6 +33,7 @@ private:
 	// Get a number from user
 	int numberInput(const int x, const int y, const char fontColor = FOREGROUND, const char backgroundColor = CONSOLE_COLOR, 
 		const bool negative = false, const int maxValue = INT32_MAX, const int minValue = INT32_MIN); 
+	void printNumber(const long long n); 
 public:
 	Gui();
 	~Gui();
