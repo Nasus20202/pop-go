@@ -47,15 +47,13 @@ void Gui::init() {
 	textcolor(FOREGROUND);
 	textbackground(CONSOLE_COLOR);
 	clrscr();
-	
+	printMenu();
 	char key = -1;
 	while (key != 'q') {
 		frame(key);
 		key = getch();
 	}
-	
 	// Restore console output style
-	cputs("\n\n");
 	_setcursortype(_NORMALCURSOR);
 }
 
@@ -155,8 +153,51 @@ void Gui::frame(const char key) {
 		}
 		textcolor(FOREGROUND); textbackground(CONSOLE_COLOR);
 		clrscr();
+		printMenu();
 	}
 	printGameBoard();
+	printStats();
+}
+
+// Print static menu
+void Gui::printMenu() {
+	textbackground(THEME_COLOR);
+	gotoxy(MENU_X, MENU_Y); 
+	// prepare nice char array to reduce fliccer
+	char* menuBackground = (char*)malloc((MENU_HEIGHT * (MENU_WIDTH + 1)) * sizeof(char));
+	if (menuBackground == NULL)
+		exit(1); // allocation error
+	int index = 0;
+	for (int i = 0; i < MENU_HEIGHT; i++) {
+		for (int j = 0; j < MENU_WIDTH; j++) {
+			menuBackground[index++] = ' ';
+		}
+		menuBackground[index++] = '\n'; // new line
+	}
+	menuBackground[--index] = '\0'; // remove last new line
+	cputs(menuBackground);
+	free(menuBackground);
+	const char* info[] = { "q - zakoncz program", "n - nowa gra", "1 - wybierz pole", "ENTER - potwierdz pole" }; // Custom info on menu
+	const int infoCount = 4; // number of elements in that array
+	int menuX = MENU_X + 3, menuY = MENU_Y + 3;
+	for (int i = 0; i < infoCount; i++) {
+		gotoxy(menuX, menuY++);
+		cputs(info[i]);
+	}
+	
+}
+
+// Prints points and turn
+void Gui::printStats() {
+	textbackground(THEME_COLOR);
+	textcolor(CONSOLE_COLOR);
+	gotoxy(STATS_X, STATS_Y);
+	if (game.getCurrentPlayer() == BLACK_STATE)
+		cputs("   Gracz: Czarny");
+	else
+		cputs("   Gracz: Bialy ");
+	gotoxy(STATS_X, STATS_Y+2);
+	cputs("Czarny: "); cputs(intToString(game.getPoints(BLACK_STATE))); cputs("  Bialy: "); cputs(intToString(game.getPoints(WHITE_STATE)));
 }
 
 // Print the board on the screen

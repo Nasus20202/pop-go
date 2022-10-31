@@ -2,9 +2,13 @@
 #include "conio2.h"
 
 #define TITLE "Krzysztof Nasuta, 193328"
-#define MENU_X 2
-#define MENU_Y 2
-#define BOARD_X 25
+#define MENU_X 1
+#define MENU_Y 1
+#define STATS_X 5
+#define STATS_Y 25
+#define MENU_HEIGHT 30
+#define MENU_WIDTH 30
+#define BOARD_X 40
 #define BOARD_Y 2
 #define BOARD_SIZE 27
 #define BACKGROUND DARKGRAY
@@ -20,8 +24,10 @@ class Gui
 private:
 	Game game;
 	int x, y;
-	void printBoard(Board* board, bool cursor = true);
-	void printGameBoard(bool cursor = true);
+	void printMenu(); // Print static menu
+	void printStats(); // Prints points and turn
+	void printBoard(Board* board, bool cursor = true); // Print any board
+	void printGameBoard(bool cursor = true); // Print board of game object
 	void frame(const char key); // Render a new frame
 	void createPopup(const int x, const int y, const int height, const int width); // Create a popup
 	// Get a number from user
