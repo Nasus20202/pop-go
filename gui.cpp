@@ -176,8 +176,8 @@ void Gui::printMenu() {
 		cputs(menuBackground);
 	}
 	free(menuBackground);
-	const char* info[] = { "q - zakoncz program", "n - nowa gra", "1 - wybierz pole", "ENTER - potwierdz pole" }; // Custom info on menu
-	const int infoCount = 4; // number of elements in that array
+	const char* info[] = { "q - zakoncz program", "n - nowa gra", "Strzalki - ruch", "1 - wybierz pole", "ENTER - potwierdz pole"}; // Custom info on menu
+	const int infoCount = 5; // number of elements in that array
 	menuX = MENU_X + 4, menuY = MENU_Y + 3;
 	for (int i = 0; i < infoCount; i++) {
 		gotoxy(menuX, menuY++);
