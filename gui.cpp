@@ -197,6 +197,8 @@ void Gui::printStats() {
 	gotoxy(STATS_X, STATS_Y+2);
 	cputs("Czarny: "); printNumber(game.getPoints(BLACK_STATE)); cputs("  Bialy: "); printNumber(game.getPoints(WHITE_STATE));
 	gotoxy(STATS_X, STATS_Y + 4);
+	cputs("                    "); // Clear space for points
+	gotoxy(STATS_X, STATS_Y + 4);
 	cputs("   X: "); printNumber(x); cputs("   Y: "); printNumber(y);
 }
 
