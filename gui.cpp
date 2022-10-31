@@ -162,24 +162,23 @@ void Gui::frame(const char key) {
 // Print static menu
 void Gui::printMenu() {
 	textbackground(THEME_COLOR);
-	gotoxy(MENU_X, MENU_Y); 
+	int menuY = MENU_Y, menuX;
 	// prepare nice char array to reduce fliccer
-	char* menuBackground = (char*)malloc((MENU_HEIGHT * (MENU_WIDTH + 1)) * sizeof(char));
+	char* menuBackground = (char*)malloc((MENU_WIDTH + 1) * sizeof(char));
 	if (menuBackground == NULL)
 		exit(1); // allocation error
-	int index = 0;
 	for (int i = 0; i < MENU_HEIGHT; i++) {
-		for (int j = 0; j < MENU_WIDTH; j++) {
-			menuBackground[index++] = ' ';
-		}
-		menuBackground[index++] = '\n'; // new line
+		menuBackground[i] = ' ';
 	}
-	menuBackground[--index] = '\0'; // remove last new line
-	cputs(menuBackground);
+	menuBackground[MENU_WIDTH] = '\0'; // remove last new line
+	for (int i = 0; i < MENU_WIDTH; i++) {
+		gotoxy(MENU_X, menuY++);
+		cputs(menuBackground);
+	}
 	free(menuBackground);
 	const char* info[] = { "q - zakoncz program", "n - nowa gra", "1 - wybierz pole", "ENTER - potwierdz pole" }; // Custom info on menu
 	const int infoCount = 4; // number of elements in that array
-	int menuX = MENU_X + 3, menuY = MENU_Y + 3;
+	menuX = MENU_X + 4, menuY = MENU_Y + 3;
 	for (int i = 0; i < infoCount; i++) {
 		gotoxy(menuX, menuY++);
 		cputs(info[i]);

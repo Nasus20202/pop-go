@@ -2,10 +2,10 @@
 #include "conio2.h"
 
 #define TITLE "Krzysztof Nasuta, 193328"
-#define MENU_X 1
+#define MENU_X 2
 #define MENU_Y 1
-#define STATS_X 5
-#define STATS_Y 25
+#define STATS_X 5 + MENU_X
+#define STATS_Y 24 + MENU_Y
 #define MENU_HEIGHT 30
 #define MENU_WIDTH 30
 #define BOARD_X 40
