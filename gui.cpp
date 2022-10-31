@@ -5,6 +5,14 @@
 
 // Represent int as a char array (string), returned pointer has to be freed
 char* intToString(long long n) {
+	if (n == 0) {
+		// if c is 0, rest of that function would return empty array of chars
+		char* c = (char*) malloc(sizeof(char) * 2);
+		if (c == NULL)
+			exit(1);
+		c[0] = '0'; c[1] = '\0';
+		return c;
+	}
 	char* string = NULL; int size = 0; bool negative = n < 0 ? true : false;
 	if (negative) // Remove minus from number if negative
 		n = -n;
@@ -36,8 +44,8 @@ void Gui::init() {
 	// Prepare console output style
 	settitle(TITLE);
 	_setcursortype(_NOCURSOR);
-	textcolor(THEME_COLOR);
-	textbackground(LIGHTGRAY);
+	textcolor(FOREGROUND);
+	textbackground(CONSOLE_COLOR);
 	clrscr();
 	
 	char key = -1;
@@ -74,6 +82,7 @@ void Gui::frame(const char key) {
 		else if (y > size - 1)
 			y = size - 1;
 	}
+	// Place a new stone
 	else if (key == '1') {
 		bool validMove = game.checkIfLegalMove(y, x);
 		if (validMove) {
@@ -88,17 +97,59 @@ void Gui::frame(const char key) {
 			}
 		}
 	}
+	// Create new game
 	else if (key == 'n') {
-		int n = 0; char c = 0;
+		char option = 0, c = 0, n;
+		char basicSizes[] = { 9, 13, 19 }; // basic sizes of board
+		int basicSizesCount = sizeof(basicSizes) / sizeof(char); int customInputX, customInputY; // For custom number input location
 		while (c != 0x0d) {
-			c = getch();
-			if (c >= '0' && c <= '9') {
-				n *= 10; n += c - '0';
+			// Create popup for user to choose size 
+			int popupX = POPUP_X, popupY = POPUP_Y;
+			createPopup(popupX, popupY, 6+basicSizesCount, 20);
+			textcolor(FOREGROUND); textbackground(THEME_COLOR);
+			popupX++; popupY++;
+			gotoxy(popupX, popupY);
+			cputs("  Wybierz rozmiar"); popupY++; 
+			gotoxy(popupX, popupY);
+			cputs("  planszy:"); popupY += 2;
+			for (int i = 0; i < basicSizesCount; i++) {
+				gotoxy(popupX, popupY);
+				if (option == i)
+					cputs("    > ");
+				else
+					cputs("      ");
+				cputs(intToString(basicSizes[i])); cputs("x"); cputs(intToString(basicSizes[i]));
+				popupY++;
 			}
+			gotoxy(popupX, popupY);
+			if (option == basicSizesCount)
+				cputs("    > ");
+			else
+				cputs("      ");
+			cputs("Dowolna");
+			c = getch(); // choose from menu
+			if (c == 0) {
+				switch (getch()) {
+				case 0x48:
+					option--; break;
+				case 0x50:
+					option++; break;
+				}
+				if (option < 0)
+					option += basicSizesCount + 1;
+				option %= basicSizesCount + 1;
+			}
+			customInputX = popupX, customInputY = popupY;
+		}
+		if (option < basicSizesCount)
+			n = basicSizes[option];
+		else {
+			gotoxy(customInputX, customInputY); cputs("               ");
+			n = numberInput(customInputX + 6, customInputY, FOREGROUND, THEME_COLOR, false, MAX_SIZE, 0);
 		}
 		game.newBoard(n);
-		textbackground(LIGHTGRAY);
 		x = 0, y = 0;
+		textcolor(FOREGROUND); textbackground(CONSOLE_COLOR);
 		clrscr();
 	}
 	printGameBoard();
@@ -194,6 +245,53 @@ void Gui::printBoard(Board* board, bool cursor) {
 // Print the game's board
 void Gui::printGameBoard(bool cursor) {
 	printBoard(game.getBoard(), cursor);
+}
+
+void Gui::createPopup(const int x, const int y, const int height, const int width) {
+	textbackground(THEME_COLOR);
+	textcolor(FOREGROUND);
+	for (int i = 0; i < width; i++) {
+		for (int j = 0; j < height; j++) {
+			gotoxy(x + i, y + j); putch(' ');
+		}
+	}
+	textcolor(FOREGROUND);
+	textbackground(CONSOLE_COLOR);
+}
+
+// Create input for a number
+int Gui::numberInput(const int x, const int y, const char fontColor, const char backgroundColor, const bool negative, const int maxValue, const int minValue) {
+	textcolor(fontColor); textbackground(backgroundColor);
+	int maxLength = 0, temp = maxValue, n = 0; char c = 0;
+	if (-minValue > maxValue)
+		temp = -minValue;
+	while (temp > 0) {
+		temp /= 10;
+		maxLength++;
+	}
+	maxLength += negative; // Need space for '-'
+	while (c != 0x0d || n < minValue || n > maxValue) {
+		gotoxy(x, y);
+		for (int i = 0; i < maxLength; i++)
+			cputs(" ");
+		gotoxy(x, y);
+		char* strNumber = intToString(n);
+		cputs(strNumber);
+		free(strNumber);
+		c = getch();
+		if (c == '\b')
+			n /= 10; // backspace
+		else if (c >= '0' && c <= '9') {
+			n *= 10; n += c - '0';
+			if (n > maxValue)
+				n = maxValue;
+		}
+		else if (c == '-' && negative) {
+			n = -n;
+		}
+	}
+	textcolor(FOREGROUND); textbackground(CONSOLE_COLOR);
+	return n;
 }
 
 Gui::Gui() {
