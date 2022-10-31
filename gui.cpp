@@ -102,7 +102,8 @@ void Gui::frame(const char key) {
 		char option = 0, c = 0, n;
 		char basicSizes[] = { 9, 13, 19 }; // basic sizes of board
 		int basicSizesCount = sizeof(basicSizes) / sizeof(char); int customInputX, customInputY; // For custom number input location
-		while (c != 0x0d) {
+		// Wait for enter or esc
+		while (c != 0x0d && c != 0x1B) {
 			// Create popup for user to choose size 
 			int popupX = POPUP_X, popupY = POPUP_Y;
 			createPopup(popupX, popupY, 6+basicSizesCount, 20);
@@ -147,8 +148,11 @@ void Gui::frame(const char key) {
 			gotoxy(customInputX, customInputY); cputs("               ");
 			n = numberInput(customInputX + 6, customInputY, FOREGROUND, THEME_COLOR, false, MAX_SIZE, 0);
 		}
-		game.newBoard(n);
-		x = 0, y = 0;
+		// If ESC not pressed
+		if (c != 0x1B) {
+			game.newBoard(n);
+			x = 0, y = 0;
+		}
 		textcolor(FOREGROUND); textbackground(CONSOLE_COLOR);
 		clrscr();
 	}
