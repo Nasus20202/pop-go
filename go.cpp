@@ -218,7 +218,7 @@
 	
 	// Create and replace board
 	void Game::newBoard(const int size) {
-		board = Board::Board(size);
+		board = Board::Board(size), previousBoard = Board::Board(size);
 		isBlacksTurn = true;
 		whitePoints = 0, blackPoints = 0;
 	}
