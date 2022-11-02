@@ -177,9 +177,9 @@
 #pragma region Game
 
 	Game::Game(const int size) {
-		board = Board::Board(size);
+		board = Board::Board(size), previousBoard = Board::Board(size);
 		isBlacksTurn = true;
-		whitePoints = 0, blackPoints = 0;
+		whitePoints = 0, blackPoints = 0, move = 0;
 	}
 	
 	Game::~Game() {
@@ -197,7 +197,21 @@
 		tempBoard = board; // Just to have a new pointer
 		char color = isBlacksTurn ? BLACK_STATE : WHITE_STATE;
 		tempBoard.set(x, y, color);
+		// Update dead stones touching that stone
+		for (int i = -1; i <= 1; i++)
+			for (int j = -1; j <= 1; j++) {
+				if ((i == 0) != (j == 0)) {
+					int row = x + i, col = y + j;
+					if (row < 0 || row > size - 1 || col < 0 || col > size - 1)
+						continue;
+					if (tempBoard.get(row, col) != color && tempBoard.countLiberties(row, col) == 0) // Check if neighbour will be dead agter placing the stone
+						tempBoard.set(row, col, EMPTY_STATE);
+				}
+			}
+		// No liberties for that stone
 		if (tempBoard.countLiberties(x, y) == 0)
+			return false;
+		if (move != 0 && tempBoard == previousBoard) // Force ko rule, if the board is the same as previous board, it's illegal (except of first turn)
 			return false;
 		return true;
 	}
@@ -248,7 +262,7 @@
 			}
 		}
 	}
-
+	
 	// Remove stone and add points
 	void Game::removeDeadStone(const int x, const int y) {
 		char color = board.get(x, y);
@@ -263,10 +277,11 @@
 	bool Game::placeStone(const int x, const int y){
 		if (!checkIfLegalMove(x, y))
 			return false;
+		previousBoard = board;  // Save current board as previous
 		board.set(x, y, isBlacksTurn ? BLACK_STATE : WHITE_STATE);
 		isBlacksTurn = !isBlacksTurn;
-		//removeAllDeadStones();
 		removeDeadNeighbours(x, y);
+		move++;
 		return true;
 	}
 

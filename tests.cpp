@@ -90,6 +90,10 @@ void Tests::capture0() {
 	assert(state0 == EMPTY_STATE && state1 == EMPTY_STATE && state2 == EMPTY_STATE);
 }
 
+void Tests::koRule0() {
+	
+}
+
 void Tests::runTests() {
 	placeStones0();
 	liberties0();
@@ -97,4 +101,5 @@ void Tests::runTests() {
 	liberties2();
 	liberties3();
 	capture0();
+	koRule0();
 }

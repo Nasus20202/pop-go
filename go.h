@@ -28,8 +28,8 @@ public:
 
 class Game {
 private:
-	Board board;
-	int whitePoints, blackPoints;
+	Board board, previousBoard;
+	int whitePoints, blackPoints, move;
 	bool isBlacksTurn; // Black always go first
 	void removeAllDeadStones(); // Remove all dead stones from the board
 	void removeDeadNeighbours(const int x, const int y); // Remove dead stone touching the stone (x, y)
