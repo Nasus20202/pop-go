@@ -146,6 +146,32 @@
 		return liberties;
 	}
 
+	int* Board::generateGroupLibertiesMatrix(const int x, const int y) {
+		{
+			int* liberties = (int*)malloc(size * size * sizeof(int)); // Allocate memory for liberties array
+			if (liberties == NULL) // If the allocation failed
+				exit(1);
+			for (int i = 0; i < size * size; i++) // -2 - not visited, -1 - no stone, 0+ - number of stone's liberties
+				liberties[i] = -2;
+			char* visited = (char*)malloc(size * size * sizeof(char)); // Allocate memory for visited array
+			if (visited == NULL) // If the allocation failed
+				exit(1);
+			for (int i = 0; i < size * size; i++) // 0 - unvisited, -1 - other color, 1 - free, 2 - same color;
+				visited[i] = 0;
+			recursiveLiberties(x, y, get(x, y), visited); int libertiesCount = 0;
+			for (int i = 0; i < size * size; i++) {
+				if (visited[i] == 1)
+					libertiesCount++;
+			}
+			for (int i = 0; i < size * size; i++) {
+				if (visited[i] == 2)
+					liberties[i] = libertiesCount;
+			}
+			free(visited);
+			return liberties;
+		}
+	}
+
 #pragma endregion
 
 #pragma region Game
@@ -198,6 +224,31 @@
 		free(liberties);
 	}
 
+	// Remove dead stone and all of it's neighbours
+	void Game::removeDeadNeighbours(const int x, const int y) {
+		const int size = board.getSize();
+		for (int i = -1; i <= 1; i++) {     // (-1, -1), (-1, 1), (1, -1), (1, 1)
+			for (int j = -1; j <= 1; j++) {
+				if ((i == 0) != (j == 0)) { // != works as logical XOR here
+					int neighbourX = x + i, neighbourY = y + j;
+					if (neighbourX < 0 || neighbourX >= size || neighbourY < 0 || neighbourY >= size)
+						continue;
+					int* liberties = board.generateGroupLibertiesMatrix(neighbourX, neighbourY);
+					for (int localX = 0; localX < size; localX++) {
+						for (int localY = 0; localY < size; localY++) {
+							int index = localX * size + localY;
+							if (liberties[index] == -1)
+								continue;
+							if (liberties[index] == 0)
+								removeDeadStone(localX, localY);
+						}
+					}
+					free(liberties);
+				}
+			}
+		}
+	}
+
 	// Remove stone and add points
 	void Game::removeDeadStone(const int x, const int y) {
 		char color = board.get(x, y);
@@ -214,7 +265,8 @@
 			return false;
 		board.set(x, y, isBlacksTurn ? BLACK_STATE : WHITE_STATE);
 		isBlacksTurn = !isBlacksTurn;
-		removeAllDeadStones();
+		//removeAllDeadStones();
+		removeDeadNeighbours(x, y);
 		return true;
 	}
 

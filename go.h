@@ -1,6 +1,6 @@
 #pragma once
 #define DEFAULT_SIZE 19
-#define MAX_SIZE 100
+#define MAX_SIZE 2500
 // Board states naming
 #define WHITE_STATE 'w'
 #define BLACK_STATE 'b'
@@ -23,6 +23,7 @@ public:
 	int getSize();
 	int countLiberties(const int x, const int y); // Count the liberties of a stone, if stone doesn't exits return -1
 	int* generateLibertiesMatrix(); // Count liberties of every stone, -1 if no stone
+	int* generateGroupLibertiesMatrix(const int x, const int y); // Count liberties of every stone in group, -1 if no stone
 };
 
 class Game {
@@ -31,6 +32,7 @@ private:
 	int whitePoints, blackPoints;
 	bool isBlacksTurn; // Black always go first
 	void removeAllDeadStones(); // Remove all dead stones from the board
+	void removeDeadNeighbours(const int x, const int y); // Remove dead stone touching the stone (x, y)
 	void removeDeadStone(const int x, const int y); // Remove a stone and add points
 public:
 	Game(const int size = DEFAULT_SIZE);

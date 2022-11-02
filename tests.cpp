@@ -84,9 +84,9 @@ void Tests::capture0() {
 	game.placeStone(1, 3);
 	game.placeStone(5, 3);
 	game.placeStone(5, 4);
-	int state0 = game.getBoard()->get(1, 1);
-	int state1 = game.getBoard()->get(1, 2);
-	int state2 = game.getBoard()->get(5, 3);
+	char state0 = game.getBoard()->get(1, 1);
+	char state1 = game.getBoard()->get(1, 2);
+	char state2 = game.getBoard()->get(5, 3);
 	assert(state0 == EMPTY_STATE && state1 == EMPTY_STATE && state2 == EMPTY_STATE);
 }
 
