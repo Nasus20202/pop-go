@@ -293,7 +293,7 @@
 	}
 
 	// Returns points of one player
-	int Game::getPoints(const char color) {
+	double Game::getPoints(const char color) {
 		if (color == WHITE_STATE)
 			return whitePoints;
 		if (color == BLACK_STATE)

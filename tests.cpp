@@ -91,7 +91,22 @@ void Tests::capture0() {
 }
 
 void Tests::koRule0() {
-	
+	Game game = Game::Game(7);
+	Board board = Board::Board(7);
+	board.set(0, 1, WHITE_STATE); board.set(1, 0, WHITE_STATE); board.set(2, 1, WHITE_STATE); board.set(0, 2, BLACK_STATE); board.set(1, 3, BLACK_STATE); board.set(2, 2, BLACK_STATE);
+	game.setBoard(&board);
+	game.placeStone(1, 1);
+	game.placeStone(1, 2);
+	bool firstMove = game.placeStone(1, 1);
+	char firstState = game.getBoard()->get(1, 1);
+	char player = game.getCurrentPlayer();
+	game.placeStone(5, 5);
+	game.placeStone(6, 5);
+	bool secondMove = game.placeStone(1, 1);
+	char secondState = game.getBoard()->get(1, 2);
+	bool thirdMove = game.placeStone(1, 2);
+	char thirdState = game.getBoard()->get(1, 2);
+	assert(firstState == EMPTY_STATE && firstMove == false && player == BLACK_STATE && secondMove == true && secondState == EMPTY_STATE && thirdMove == false && thirdState == EMPTY_STATE);
 }
 
 void Tests::runTests() {

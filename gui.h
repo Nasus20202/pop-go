@@ -24,6 +24,12 @@ class Gui
 private:
 	Game game;
 	int x, y;
+	// All function avaiable for the user
+	void move(); // Allows changing x and y
+	void placeStone(); // Allows placing a stone
+	void newGame(); // Allows starting a new game
+
+	// All functions that are used to draw the GUI
 	void printMenu(); // Print static menu
 	void printStats(); // Prints points and turn
 	void printBoard(Board* board, bool cursor = true); // Print any board
@@ -33,13 +39,11 @@ private:
 	// Get a number from user
 	int numberInput(const int x, const int y, const char fontColor = FOREGROUND, const char backgroundColor = CONSOLE_COLOR, 
 		const bool negative = false, const int maxValue = INT32_MAX, const int minValue = INT32_MIN); 
-	void printNumber(const long long n); 
+	void printInt(const long long n); 
+	void printDouble(const double n);
 public:
 	Gui();
 	~Gui();
 	void init(); // Intialize GUI
 };
-
-// Convert int to char array (string)
-char* intToString(long long n);
 
