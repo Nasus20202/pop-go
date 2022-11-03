@@ -117,6 +117,9 @@ void Gui::init() {
 	}
 	// Restore console output style
 	_setcursortype(_NORMALCURSOR);
+	textcolor(LIGHTGRAY);
+	textbackground(BLACK);
+	clrscr();
 }
 
 void Gui::frame(const char key) {
