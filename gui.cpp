@@ -459,6 +459,7 @@ void Gui::saveGame() {
 		writeLine(sizeString, file);
 		fclose(file); // close the file
 	}
+	free(filename);
 }
 
 // Load game state from file
@@ -487,6 +488,7 @@ void Gui::loadGame() {
 
 		fclose(file); // close the file
 	}
+	free(filename);
 }
 
 void Gui::createPopup(const int x, const int y, const int height, const int width) {
