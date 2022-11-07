@@ -23,9 +23,6 @@
 #define YELLOW		14
 #define WHITE		15
 
-#define INT32_MAX 2147483647
-#define INT32_MIN -2147483648
-
 #define _NOCURSOR	0
 #define _SOLIDCURSOR	1
 #define _NORMALCURSOR	2

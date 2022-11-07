@@ -155,6 +155,7 @@ void Gui::init() {
 	clrscr();
 	printMenu();
 	char key = -1;
+	cputs(stringInput(1, 1));
 	while (key != 'q') {
 		frame(key);
 		key = getch();
@@ -218,7 +219,7 @@ void Gui::placeStone() {
 		printBoard(&board, false);
 		char confirm = getch();
 		// Confirmation by clicking enter
-		if (confirm == 0x0d) {
+		if (confirm == ENTER) {
 			game.placeStone(y, x);
 		}
 	}
@@ -230,7 +231,7 @@ void Gui::newGame() {
 	char basicSizes[] = { 9, 13, 19 }; // basic sizes of board
 	int basicSizesCount = sizeof(basicSizes) / sizeof(char); int customInputX, customInputY; // For custom number input location
 	// Wait for enter or esc
-	while (c != 0x0d && c != 0x1B) {
+	while (c != ENTER && c != ESC) {
 		// Create popup for user to choose size 
 		int popupX = POPUP_X, popupY = POPUP_Y;
 		createPopup(popupX, popupY, 6 + basicSizesCount, 20);
@@ -276,7 +277,7 @@ void Gui::newGame() {
 		n = numberInput(customInputX + 6, customInputY, FOREGROUND, THEME_COLOR, false, MAX_SIZE, 0);
 	}
 	// If ESC not pressed
-	if (c != 0x1B) {
+	if (c != ESC && n > 0) { // Check if action wasn't cancelled (n == INT32_MIN)
 		game.newBoard(n);
 		x = 0, y = 0;
 	}
@@ -446,7 +447,7 @@ void Gui::createPopup(const int x, const int y, const int height, const int widt
 	textbackground(CONSOLE_COLOR);
 }
 
-// Create input for a number
+// Create input for a number, return INT32_MIN if esc pressed
 int Gui::numberInput(const int x, const int y, const char fontColor, const char backgroundColor, const bool negative, const int maxValue, const int minValue) {
 	textcolor(fontColor); textbackground(backgroundColor);
 	int maxLength = 0, temp = maxValue, n = 0; char c = 0;
@@ -457,15 +458,17 @@ int Gui::numberInput(const int x, const int y, const char fontColor, const char 
 		maxLength++;
 	}
 	maxLength += negative; // Need space for '-'
-	while (c != 0x0d || n < minValue || n > maxValue) {
+	while (c != ENTER || n < minValue || n > maxValue) {
 		gotoxy(x, y);
 		for (int i = 0; i < maxLength; i++)
 			cputs(" ");
 		gotoxy(x, y);
 		printInt(n);
 		c = getch();
-		if (c == '\b')
+		if (c == BACKSPACE)
 			n /= 10; // backspace
+		else if (c == ESC)
+			return INT32_MIN; // return if action cancelled
 		else if (c >= '0' && c <= '9') {
 			n *= 10; n += c - '0';
 			if (n > maxValue)
@@ -477,6 +480,41 @@ int Gui::numberInput(const int x, const int y, const char fontColor, const char 
 	}
 	textcolor(FOREGROUND); textbackground(CONSOLE_COLOR);
 	return n;
+}
+
+// Create input for a string, returns empty string if action cancelled
+char* Gui::stringInput(const int x, const int y, const char fontColor, const char backgroundColor, const int printLength, const int maxLength) {
+	textcolor(fontColor); textbackground(backgroundColor);
+	char c = 0, * string = NULL; int size = 0;
+	string = (char*) malloc((maxLength + 1) * sizeof(char));
+	if (string == NULL)
+		exit(1); // allocation error
+	while (c != ENTER) {
+		string[size] = '\0'; // end of string
+		gotoxy(x, y);
+		for (int i = 0; i < printLength; i++)
+			cputs(" ");
+		gotoxy(x, y);
+		for (int i = size-printLength; i < size; i++) { // print only last printLength characters
+			if (i >= 0)
+				putch(string[i]);
+		}
+		c = getch();
+		if (c == BACKSPACE) {
+			size = size > 0 ? size - 1 : size; // backspace, removes one char of size
+		}
+		else if (c == ESC) {
+			string[0] = '\0'; // return empty string if action cancelled
+			return string;
+		}
+		else if(size < maxLength) {
+			string[size] = c;
+			size++;
+		}
+	}
+	string[size] = '\0'; // end of string
+	textcolor(FOREGROUND); textbackground(CONSOLE_COLOR);
+	return string;
 }
 
 void Gui::printInt(const long long n) {
