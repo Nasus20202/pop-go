@@ -447,6 +447,7 @@ void Gui::saveGame() {
 		getch();
 	}
 	else {
+
 		fclose(file); // close the file
 	}
 }
@@ -474,6 +475,7 @@ void Gui::loadGame() {
 		getch();
 	}
 	else {
+
 		fclose(file); // close the file
 	}
 }

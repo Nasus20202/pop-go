@@ -1,3 +1,6 @@
+# Game saves
+*.gos
+
 # VS files
 .vs/
 x64/
