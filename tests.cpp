@@ -25,7 +25,7 @@ void Tests::liberties0() {
 	board.set(2, 2, EMPTY_STATE);
 	board.set(2, 4, EMPTY_STATE);
 	board.set(3, 1, EMPTY_STATE);
-	game.setBoard(&board);
+	game.setBoard(board);
 	bool firstMove = game.placeStone(3, 1);
 	int firstLiberties = game.getBoard()->countLiberties(1, 2);
 	bool secondMove = game.placeStone(2, 2);
@@ -77,7 +77,7 @@ void Tests::capture0() {
 	Game game = Game::Game(7);
 	Board board = Board::Board(7);
 	board.set(0, 1, WHITE_STATE); board.set(1, 0, WHITE_STATE); board.set(2, 1, WHITE_STATE); board.set(0, 2, WHITE_STATE); board.set(2, 2, WHITE_STATE); board.set(5, 2, WHITE_STATE); board.set(6, 3, WHITE_STATE);
-	game.setBoard(&board);
+	game.setBoard(board);
 	game.placeStone(1, 1);
 	game.placeStone(4, 3);
 	game.placeStone(1, 2);
@@ -94,7 +94,7 @@ void Tests::koRule0() {
 	Game game = Game::Game(7);
 	Board board = Board::Board(7);
 	board.set(0, 1, WHITE_STATE); board.set(1, 0, WHITE_STATE); board.set(2, 1, WHITE_STATE); board.set(0, 2, BLACK_STATE); board.set(1, 3, BLACK_STATE); board.set(2, 2, BLACK_STATE);
-	game.setBoard(&board);
+	game.setBoard(board);
 	game.placeStone(1, 1);
 	game.placeStone(1, 2);
 	bool firstMove = game.placeStone(1, 1);

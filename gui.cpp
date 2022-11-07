@@ -102,6 +102,50 @@ char* doubleToString(double n, int precision = 2) {
 	return string;
 }
 
+// Converts string to integer, returns 0 if string is not a number
+long long stringToInt(const char* string) {
+	long long n = 0; int i = 0; bool negative = false;
+	while (string[i] != '\0') {
+		char c = string[i++];
+		if (c == '-')
+			negative = !negative;
+		else if (c >= '0' && c <= '9')
+			n = n * 10 + (c - '0');
+		else
+			return 0; // Not a number
+	}
+	return negative ? -n : n;
+}
+
+// Converts string to double, returns 0 if string is not a number
+double stringToDouble(const char* string) {
+	double decimalPart = 0, decimalBase = 0.1; int i = 0, integerPart = 0; bool negative = false, dotSpotted = false;
+	while (string[i] != '\0') {
+		char c = string[i++];
+		if (c == '-')
+			negative = !negative;
+		else if (c >= '0' && c <= '9') {
+			c -= '0'; 
+			if (!dotSpotted) { // interger part
+				integerPart = integerPart * 10 + c;
+			}
+			else { // decimal part
+				decimalPart += decimalBase * c;
+				decimalBase /= 10;
+			}
+			
+		}
+		else if (c == '.' && !dotSpotted) { // check if decimal part has already started
+			dotSpotted = true;
+		}
+		else
+			return 0; // Not a number
+	}
+	double n = decimalPart + integerPart;
+	return negative ? -n : n;
+}
+
+// Initialize GUI
 void Gui::init() {
 	// Prepare console output style
 	settitle(TITLE);
@@ -378,6 +422,16 @@ void Gui::printBoard(Board* board, bool cursor) {
 // Print the game's board
 void Gui::printGameBoard(bool cursor) {
 	printBoard(game.getBoard(), cursor);
+}
+
+// Save game state to file
+void Gui::saveGame(const char* fileName) {
+	return;
+}
+
+// Load game state from file
+void Gui::loadGame(const char* fileName) {
+	return;
 }
 
 void Gui::createPopup(const int x, const int y, const int height, const int width) {

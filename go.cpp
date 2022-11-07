@@ -307,8 +307,8 @@
 	}
 
 	// Update board
-	void Game::setBoard(const Board* board) {
-		this->board = *board;
+	void Game::setBoard(const Board &board) {
+		this->board = board;
 	}
 
 #pragma endregion
