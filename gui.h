@@ -53,8 +53,6 @@ private:
 	void printGameBoard(bool cursor = true); // Print board of game object
 	void saveGame(); // Save game state from file
 	void loadGame(); // Load game state from file
-	char* createSaveState(); // Create save state
-	void loadStateFromState(const char* state); // Load state from save state
 	void frame(const char key); // Render a new frame
 	void createPopup(const int x, const int y, const int height, const int width); // Create a popup
 	// Get a number from user, returns INT32_MIN if user pressed ESC

@@ -306,9 +306,19 @@
 		return &board;
 	}
 
+	// Get pointer to the previous board object
+	Board* Game::getPreviousBoard() {
+		return &previousBoard;
+	}
+
 	// Update board
 	void Game::setBoard(const Board &board) {
 		this->board = board;
+	}
+
+	// Update previous board
+	void Game::setPreviousBoard(const Board& board) {
+		this->previousBoard = board;
 	}
 
 #pragma endregion

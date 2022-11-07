@@ -147,6 +147,12 @@ double stringToDouble(const char* string) {
 	return negative ? -n : n;
 }
 
+// Write char array (string) to file
+void writeLine(char* line, FILE *file) {
+	strcat_s(line, strlen(line)+2, "\n");
+	fwrite(line, sizeof(char), strlen(line), file);
+}
+
 // Initialize GUI
 void Gui::init() {
 	// Prepare console output style
@@ -307,8 +313,8 @@ void Gui::printMenu() {
 		cputs(menuBackground);
 	}
 	free(menuBackground);
-	const char* info[] = { "q - zakoncz program", "n - nowa gra", "Strzalki - ruch", "1 - wybierz pole", "ENTER - potwierdz pole"}; // Custom info on menu
-	const int infoCount = 5; // number of elements in that array
+	const char* info[] = { "q - zakoncz program", "n - nowa gra", "Strzalki - ruch", "1 - wybierz pole", "ENTER - potwierdz pole", "s - zapisz gre", "l - wczytaj gre"}; // Custom info on menu
+	const int infoCount = 7; // number of elements in that array
 	menuX = MENU_X + 4, menuY = MENU_Y + 3;
 	for (int i = 0; i < infoCount; i++) {
 		gotoxy(menuX, menuY++);
@@ -440,14 +446,17 @@ void Gui::saveGame() {
 	char* filename = stringInput(POPUP_X + 2, POPUP_Y + 3, FOREGROUND, THEME_COLOR, 18, MAX_FILE_NAME_LENGTH);
 	if (filename[0] == '\0')  // saving aborted
 		return;
+	strcat_s(filename, MAX_FILE_NAME_LENGTH + (sizeof(FILE_EXTENSION)), (char*)FILE_EXTENSION); // Add extension to filename
 	FILE* file;
 	if (fopen_s(&file, filename, "w") != 0) {
 		gotoxy(POPUP_X + 1, POPUP_Y + 3);
+		textcolor(RED); textbackground(THEME_COLOR);
 		cputs("  Nie mozna zapisac  ");
 		getch();
 	}
 	else {
-
+		char* sizeString = intToString(game.getBoard()->getSize());
+		writeLine(sizeString, file);
 		fclose(file); // close the file
 	}
 }
@@ -478,16 +487,6 @@ void Gui::loadGame() {
 
 		fclose(file); // close the file
 	}
-}
-
-// Create save state
-char* Gui::createSaveState() {
-	return (char*)"\0";
-}
-
-// Load state from save state
-void loadStateFromState(const char* state) {
-
 }
 
 void Gui::createPopup(const int x, const int y, const int height, const int width) {
