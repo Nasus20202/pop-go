@@ -29,6 +29,9 @@
 #define ESC 0x1B
 #define ENTER 0x0D
 #define BACKSPACE 0x08
+// File extension
+#define FILE_EXTENSION ".gos"
+#define MAX_FILE_NAME_LENGTH 32
 // Limits
 #define INT32_MAX 2147483647
 #define INT32_MIN -2147483648
@@ -48,8 +51,10 @@ private:
 	void printStats(); // Prints points and turn
 	void printBoard(Board* board, bool cursor = true); // Print any board
 	void printGameBoard(bool cursor = true); // Print board of game object
-	void saveGame(const char* fileName); // Save game state from file
-	void loadGame(const char* fileName); // Load game state from file
+	void saveGame(); // Save game state from file
+	void loadGame(); // Load game state from file
+	char* createSaveState(); // Create save state
+	void loadStateFromState(const char* state); // Load state from save state
 	void frame(const char key); // Render a new frame
 	void createPopup(const int x, const int y, const int height, const int width); // Create a popup
 	// Get a number from user, returns INT32_MIN if user pressed ESC

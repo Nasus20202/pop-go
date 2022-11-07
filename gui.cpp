@@ -2,6 +2,8 @@
 #include "go.h"
 #include "conio2.h"
 #include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 
 // Reverse a char array
 void reverseString(char* string, int size) {
@@ -155,7 +157,6 @@ void Gui::init() {
 	clrscr();
 	printMenu();
 	char key = -1;
-	cputs(stringInput(1, 1));
 	while (key != 'q') {
 		frame(key);
 		key = getch();
@@ -169,7 +170,7 @@ void Gui::init() {
 
 void Gui::frame(const char key) {
 	// Pressed key is a special key - arrow
-	if (key == 0) { 
+	if (key == 0) {
 		move();
 	}
 	// Place a new stone
@@ -177,9 +178,12 @@ void Gui::frame(const char key) {
 		placeStone();
 	}
 	// Create new game
-	else if (key == 'n') {
+	else if (key == 'n')
 		newGame();
-	}
+	else if (key == 'l')
+		loadGame();
+	else if (key == 's')
+		saveGame();
 	printGameBoard();
 	printStats();
 	if (game.getPoints(WHITE_STATE) > 0)
@@ -426,13 +430,62 @@ void Gui::printGameBoard(bool cursor) {
 }
 
 // Save game state to file
-void Gui::saveGame(const char* fileName) {
-	return;
+void Gui::saveGame() {
+	createPopup(POPUP_X, POPUP_Y, 5, 22);
+	textcolor(FOREGROUND); textbackground(THEME_COLOR);
+	gotoxy(POPUP_X + 1, POPUP_Y + 1);
+	cputs("       Zapisz");
+	gotoxy(POPUP_X + 1, POPUP_Y + 2);
+	cputs(" Podaj nazwe zapisu:");
+	char* filename = stringInput(POPUP_X + 2, POPUP_Y + 3, FOREGROUND, THEME_COLOR, 18, MAX_FILE_NAME_LENGTH);
+	if (filename[0] == '\0')  // saving aborted
+		return;
+	FILE* file;
+	if (fopen_s(&file, filename, "w") != 0) {
+		gotoxy(POPUP_X + 1, POPUP_Y + 3);
+		cputs("  Nie mozna zapisac  ");
+		getch();
+	}
+	else {
+		fclose(file); // close the file
+	}
 }
 
 // Load game state from file
-void Gui::loadGame(const char* fileName) {
-	return;
+void Gui::loadGame() {
+	createPopup(POPUP_X, POPUP_Y, 5, 22);
+	textcolor(FOREGROUND); textbackground(THEME_COLOR);
+	gotoxy(POPUP_X + 1, POPUP_Y + 1);
+	cputs("       Wczytaj");
+	gotoxy(POPUP_X + 1, POPUP_Y + 2);
+	cputs(" Podaj nazwe zapisu:");
+	char* filename = stringInput(POPUP_X + 2, POPUP_Y + 3, FOREGROUND, THEME_COLOR, 18, MAX_FILE_NAME_LENGTH);
+	if (filename[0] == '\0') // loading aborted
+		return;
+	strcat_s(filename, MAX_FILE_NAME_LENGTH+(sizeof(FILE_EXTENSION)), (char*)FILE_EXTENSION); // Add extension to filename
+	FILE* file; int errorCode;
+	if ((errorCode = fopen_s(&file, filename, "r")) != 0) {
+		gotoxy(POPUP_X + 1, POPUP_Y + 3);
+		textcolor(RED); textbackground(THEME_COLOR);
+		if (errorCode == 2) // code 2 - file doesn't exits
+			cputs("  Plik nie istnieje ");
+		else
+			cputs("  Nie mozna otworzyc  ");
+		getch();
+	}
+	else {
+		fclose(file); // close the file
+	}
+}
+
+// Create save state
+char* Gui::createSaveState() {
+	return (char*)"\0";
+}
+
+// Load state from save state
+void loadStateFromState(const char* state) {
+
 }
 
 void Gui::createPopup(const int x, const int y, const int height, const int width) {
@@ -512,7 +565,7 @@ char* Gui::stringInput(const int x, const int y, const char fontColor, const cha
 			size++;
 		}
 	}
-	string[size] = '\0'; // end of string
+	string[size-1] = '\0'; // end of string
 	textcolor(FOREGROUND); textbackground(CONSOLE_COLOR);
 	return string;
 }
