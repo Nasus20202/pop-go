@@ -172,6 +172,21 @@
 		}
 	}
 
+	// Convert to string
+	char* Board::toString() {
+		char* string = NULL;
+		string = (char*)malloc((size * size + 1) * sizeof(char)); // Allocate memory for string
+		if (string == NULL) // If the allocation failed
+			exit(1);
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				string[i * size + j] = get(i, j);
+			}
+		}
+		string[size * size] = '\0';
+		return string;
+	}
+
 #pragma endregion
 
 #pragma region Game

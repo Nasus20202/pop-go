@@ -149,8 +149,28 @@ double stringToDouble(const char* string) {
 
 // Write char array (string) to file
 void writeLine(char* line, FILE *file) {
-	strcat_s(line, strlen(line)+2, "\n");
 	fwrite(line, sizeof(char), strlen(line), file);
+	fwrite("\n", sizeof(char), 1, file);
+}
+
+// Read how many lines are in file
+int countLines(FILE* file) {
+	rewind(file);
+	fseek(file, 0, SEEK_END);
+	int fileSize = ftell(file);
+	rewind(file);
+	char* buffer = (char*)malloc(sizeof(char) * (fileSize + 1)); // memory for buffer
+	if (buffer == NULL)
+		exit(1); // allocation error
+	if (fread(buffer, sizeof(char), fileSize, file) != fileSize) // read file to buffer
+		exit(2); // read error
+	buffer[fileSize] = '\0'; // end of string
+	int lineCount = 1;
+	for (int i = 0; i < fileSize; i++) {
+		if (buffer[i] == '\n' && i != fileSize - 1)
+			lineCount++;
+	}
+	return lineCount;
 }
 
 // Initialize GUI
@@ -186,14 +206,14 @@ void Gui::frame(const char key) {
 	// Create new game
 	else if (key == 'n')
 		newGame();
+	// load game
 	else if (key == 'l')
 		loadGame();
+	// save game
 	else if (key == 's')
 		saveGame();
 	printGameBoard();
 	printStats();
-	if (game.getPoints(WHITE_STATE) > 0)
-		int a = 0;
 }
 
 // Allows to change x and y
@@ -444,9 +464,13 @@ void Gui::saveGame() {
 	gotoxy(POPUP_X + 1, POPUP_Y + 2);
 	cputs(" Podaj nazwe zapisu:");
 	char* filename = stringInput(POPUP_X + 2, POPUP_Y + 3, FOREGROUND, THEME_COLOR, 18, MAX_FILE_NAME_LENGTH);
-	if (filename[0] == '\0')  // saving aborted
+	if (filename[0] == '\0') {  // saving aborted
+		textbackground(CONSOLE_COLOR);
+		clrscr();
+		printMenu(); // clear popup
 		return;
-	strcat_s(filename, MAX_FILE_NAME_LENGTH + (sizeof(FILE_EXTENSION)), (char*)FILE_EXTENSION); // Add extension to filename
+	}
+	strcat_s(filename, MAX_FILE_NAME_LENGTH, (char*)FILE_EXTENSION); // Add extension to filename
 	FILE* file;
 	if (fopen_s(&file, filename, "w") != 0) {
 		gotoxy(POPUP_X + 1, POPUP_Y + 3);
@@ -455,10 +479,36 @@ void Gui::saveGame() {
 		getch();
 	}
 	else {
+		// Size of the board
 		char* sizeString = intToString(game.getBoard()->getSize());
 		writeLine(sizeString, file);
+		// Current player
+		char* currentPlayer = (char*)malloc(3*sizeof(char));
+		if (currentPlayer == NULL)
+			exit(1);
+		currentPlayer[0] = game.getCurrentPlayer(); currentPlayer[1] = '\0';
+		writeLine(currentPlayer, file);
+		// Points
+		char* blackPoints = doubleToString(game.getPoints(BLACK_STATE)), *whitePoints = doubleToString(game.getPoints(WHITE_STATE));
+		writeLine(blackPoints, file);
+		writeLine(whitePoints, file);
+		// Game board
+		char* gameBoard = game.getBoard()->toString(), *previousGameBoard = game.getPreviousBoard()->toString();
+		writeLine(gameBoard, file);
+		writeLine(previousGameBoard, file);
+		// Free the pointers to string
+		free(sizeString);
+		free(currentPlayer);
+		free(blackPoints);
+		free(whitePoints);
+		free(gameBoard);
+		free(previousGameBoard);
 		fclose(file); // close the file
 	}
+	free(filename);
+	textbackground(CONSOLE_COLOR);
+	clrscr();
+	printMenu(); // clear popup
 }
 
 // Load game state from file
@@ -470,11 +520,15 @@ void Gui::loadGame() {
 	gotoxy(POPUP_X + 1, POPUP_Y + 2);
 	cputs(" Podaj nazwe zapisu:");
 	char* filename = stringInput(POPUP_X + 2, POPUP_Y + 3, FOREGROUND, THEME_COLOR, 18, MAX_FILE_NAME_LENGTH);
-	if (filename[0] == '\0') // loading aborted
+	if (filename[0] == '\0') { // loading aborted
+		textbackground(CONSOLE_COLOR);
+		clrscr();
+		printMenu(); // clear popup
 		return;
-	strcat_s(filename, MAX_FILE_NAME_LENGTH+(sizeof(FILE_EXTENSION)), (char*)FILE_EXTENSION); // Add extension to filename
+	}
+	strcat_s(filename, MAX_FILE_NAME_LENGTH, (char*)FILE_EXTENSION); // Add extension to filename
 	FILE* file; int errorCode;
-	if ((errorCode = fopen_s(&file, filename, "r")) != 0) {
+	if ((errorCode = fopen_s(&file, filename, "rb")) != 0) {
 		gotoxy(POPUP_X + 1, POPUP_Y + 3);
 		textcolor(RED); textbackground(THEME_COLOR);
 		if (errorCode == 2) // code 2 - file doesn't exits
@@ -484,9 +538,13 @@ void Gui::loadGame() {
 		getch();
 	}
 	else {
-
+		int linesCount = countLines(file);
 		fclose(file); // close the file
 	}
+	free(filename);
+	textbackground(CONSOLE_COLOR);
+	clrscr();
+	printMenu(); // clear popup
 }
 
 void Gui::createPopup(const int x, const int y, const int height, const int width) {

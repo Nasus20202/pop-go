@@ -24,6 +24,7 @@ public:
 	int countLiberties(const int x, const int y); // Count the liberties of a stone, if stone doesn't exits return -1
 	int* generateLibertiesMatrix(); // Count liberties of every stone, -1 if no stone
 	int* generateGroupLibertiesMatrix(const int x, const int y); // Count liberties of every stone in group, -1 if no stone
+	char* toString(); // Convert board to string
 };
 
 class Game {
