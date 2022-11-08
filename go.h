@@ -45,6 +45,7 @@ public:
 
 	char getCurrentPlayer();
 	double getPoints(const char color);
+	void setPoints(const char color, const double points = 0);
 	Board* getBoard();
 	Board* getPreviousBoard();
 	void setBoard(const Board &board);

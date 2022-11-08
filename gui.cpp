@@ -147,7 +147,7 @@ double stringToDouble(const char* string) {
 	return negative ? -n : n;
 }
 
-// Write char array (string) to file
+// Write char array (string) to file, end with '\n' which is required for save loading
 void writeLine(char* line, FILE *file) {
 	fwrite(line, sizeof(char), strlen(line), file);
 	fwrite("\n", sizeof(char), 1, file);
@@ -526,8 +526,8 @@ void Gui::loadGame() {
 		return;
 	}
 	strcat_s(filename, MAX_FILE_NAME_LENGTH, (char*)FILE_EXTENSION); // Add extension to filename
-	FILE* file; int errorCode;
-	if ((errorCode = fopen_s(&file, filename, "rb")) != 0) {
+	FILE* file; int errorCode; bool brokenSave = false;
+	if ((errorCode = fopen_s(&file, filename, "rb")) != 0) { // open in binary read mode
 		gotoxy(POPUP_X + 1, POPUP_Y + 3);
 		textcolor(RED); textbackground(THEME_COLOR);
 		if (errorCode == 2) // code 2 - file doesn't exits
@@ -538,13 +538,13 @@ void Gui::loadGame() {
 	}
 	else {
 		char buffer[1]; int line = 0; // buffer size is 1 because we read only one char at a time, don't want to lose any data
-		char* currentString = NULL; int currentStringSize = 0, boardSize, blackPoints, whitePoints, memSize; char currentPlayer;
-		char* board = NULL, * prevBoard = NULL;
+		char* currentString = NULL; int currentStringSize = 0, boardSize = -1, blackPoints = -1, whitePoints = -1, memSize; char currentPlayer = EMPTY_STATE;
+		char* boardString = NULL, * prevBoardString = NULL;
 		while (fread(buffer, sizeof *buffer, 1, file) == 1) {
 			char c = buffer[0];
 			if (c == '\r') // skip carriage return
 				continue;
-			else if (c == '\n') {
+			else if (c == '\n') { // '\n' is required after every line
 				addCharToString(currentString, '\0', currentStringSize);
 				switch (line) {
 				case 0: // Line 1 - board size
@@ -557,12 +557,12 @@ void Gui::loadGame() {
 					whitePoints = stringToDouble(currentString); break;
 				case 4: // Line 5 - game board
 					memSize = (currentStringSize + 1) * sizeof(char);
-					board = (char*)malloc(memSize);
-					strcpy_s(board, currentStringSize+1, currentString); break;
+					boardString = (char*)malloc(memSize);
+					strcpy_s(boardString, currentStringSize+1, currentString); break;
 				case 5: // Line 6 - previous game board
 					memSize = (currentStringSize + 1) * sizeof(char);
-					prevBoard = (char*)malloc(memSize);
-					strcpy_s(prevBoard, currentStringSize + 1, currentString); break;
+					prevBoardString = (char*)malloc(memSize);
+					strcpy_s(prevBoardString, currentStringSize + 1, currentString); break;
 				}
 				free(currentString);
 				currentString = NULL;
@@ -573,10 +573,42 @@ void Gui::loadGame() {
 				addCharToString(currentString, c, currentStringSize++);
 			}
 		}
-		
-		// Free the pointers to string
-		free(board); free(prevBoard); free(currentString);
 		fclose(file); // close the file
+		if (boardString == NULL || prevBoardString == NULL || boardSize < 0 || blackPoints < 0 || whitePoints < 0 || currentPlayer == EMPTY_STATE) {
+			brokenSave = true;  // Game save is broken, don't continue
+		}
+		else { // Game save was correctly parsed
+			Board board = Board::Board(boardSize), prevBoard = Board::Board(boardSize);
+			int iterator = 0;
+			while (boardString[iterator] != '\0' && prevBoardString[iterator] != '\0') {
+				int x = iterator / boardSize, y = iterator % boardSize; char c = boardString[iterator], prevC = prevBoardString[iterator];
+				if (c == BLACK_STATE || c == WHITE_STATE)
+					board.set(x, y, c);
+				else
+					board.set(x, y, EMPTY_STATE); // if char is not BLACK_STATE or WHITE_STATE then it's empty (or broken)
+				if (prevC == BLACK_STATE || prevC == WHITE_STATE)
+					prevBoard.set(x, y, prevC);
+				else
+					prevBoard.set(x, y, EMPTY_STATE);
+				iterator++;
+			}
+			if (iterator != boardSize * boardSize) { // Game save is broken
+				brokenSave = true;
+			}
+			else { // Set game state
+				game.setPoints(BLACK_STATE, blackPoints); game.setPoints(WHITE_STATE, whitePoints);
+				game.setBoard(board); game.setPreviousBoard(prevBoard); x = 0, y = 0;
+				
+			}
+			// Free the pointers to string
+			free(boardString); free(prevBoardString); free(currentString);
+		}
+	}
+	if (brokenSave) {
+		gotoxy(POPUP_X + 1, POPUP_Y + 3);
+		textcolor(RED); textbackground(THEME_COLOR);
+		cputs("Plik jest uszkodzony"); getch();
+		textcolor(FOREGROUND);
 	}
 	free(filename);
 	textbackground(CONSOLE_COLOR);

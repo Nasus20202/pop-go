@@ -316,6 +316,14 @@
 		return 0;
 	}
 
+	// Update points of a player
+	void Game::setPoints(const char color, const double points) {
+		if (color == WHITE_STATE)
+			whitePoints = points;
+		else if (color == BLACK_STATE)
+			blackPoints = points;
+	}
+
 	// Get pointer to the board object
 	Board* Game::getBoard() {
 		return &board;
