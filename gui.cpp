@@ -542,7 +542,7 @@ void Gui::loadGame() {
 		char buffer[1]; int line = 0; // buffer size is 1 because we read only one char at a time, don't want to lose any data
 		char* currentString = NULL; int currentStringSize = 0, boardSize = -1, blackPoints = -1, whitePoints = -1, memSize; char currentPlayer = EMPTY_STATE;
 		char* boardString = NULL, * prevBoardString = NULL;
-		while (fread(buffer, sizeof *buffer, 1, file) == 1) {
+		while (fread(buffer, sizeof *buffer, 1, file) == 1 && !brokenSave) {
 			char c = buffer[0];
 			if (c == '\r') // skip carriage return
 				continue;
@@ -573,15 +573,21 @@ void Gui::loadGame() {
 			}
 			else {
 				if (line == 4 || line == 5) { // If loading board, then use this optimized version for fixed string length
-					if(currentStringSize == 0)
-						currentString = (char*)malloc((boardSize*boardSize+1) * sizeof(char));
-					currentString[currentStringSize++] = c;
+					if (currentStringSize == 0) {
+						currentString = (char*)malloc((boardSize * boardSize + 1) * sizeof(char)); // we know the wanted size of current string
+						if (currentString == NULL) // allocation error
+							exit(1);
+					}
+					if (currentStringSize >= boardSize * boardSize)
+						brokenSave = true;
+					else 
+						currentString[currentStringSize++] = c;
 				} else 
 					addCharToString(currentString, c, currentStringSize++); // this works without know size, but uses realloc a lot, good for short strings
 			}
 		}
 		fclose(file); // close the file
-		if (boardString == NULL || prevBoardString == NULL || boardSize < 0 || blackPoints < 0 || whitePoints < 0 || currentPlayer == EMPTY_STATE) {
+		if (boardString == NULL || prevBoardString == NULL || boardSize < 0 || blackPoints < 0 || whitePoints < 0 || currentPlayer == EMPTY_STATE || brokenSave) {
 			brokenSave = true;  // Game save is broken, don't continue
 		}
 		else { // Game save was correctly parsed
