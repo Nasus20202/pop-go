@@ -192,9 +192,7 @@
 #pragma region Game
 
 	Game::Game(const int size) {
-		board = Board::Board(size), previousBoard = Board::Board(size);
-		isBlacksTurn = true;
-		whitePoints = 0, blackPoints = 0, move = 0;
+		newBoard(size);
 	}
 	
 	Game::~Game() {
@@ -235,7 +233,7 @@
 	void Game::newBoard(const int size) {
 		board = Board::Board(size), previousBoard = Board::Board(size);
 		isBlacksTurn = true;
-		whitePoints = 0, blackPoints = 0;
+		whitePoints = BASE_WHITE_POINTS, blackPoints = 0;
 	}
 
 	// Clear the board out of all dead stones

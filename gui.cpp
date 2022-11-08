@@ -475,6 +475,7 @@ void Gui::saveGame() {
 		gotoxy(POPUP_X + 1, POPUP_Y + 3);
 		textcolor(RED); textbackground(THEME_COLOR);
 		cputs("  Nie mozna zapisac  ");
+		textcolor(FOREGROUND);
 		getch();
 	}
 	else {
@@ -506,6 +507,7 @@ void Gui::saveGame() {
 	}
 	free(filename);
 	textbackground(CONSOLE_COLOR);
+
 	clrscr();
 	printMenu(); // clear popup
 }

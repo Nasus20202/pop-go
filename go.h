@@ -5,6 +5,8 @@
 #define WHITE_STATE 'w'
 #define BLACK_STATE 'b'
 #define EMPTY_STATE 'e'
+// Komi
+#define BASE_WHITE_POINTS 6.5
 
 class Board {
 private:
