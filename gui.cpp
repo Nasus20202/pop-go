@@ -153,24 +153,14 @@ void writeLine(char* line, FILE *file) {
 	fwrite("\n", sizeof(char), 1, file);
 }
 
-// Read how many lines are in file
-int countLines(FILE* file) {
-	rewind(file);
-	fseek(file, 0, SEEK_END);
-	int fileSize = ftell(file);
-	rewind(file);
-	char* buffer = (char*)malloc(sizeof(char) * (fileSize + 1)); // memory for buffer
-	if (buffer == NULL)
-		exit(1); // allocation error
-	if (fread(buffer, sizeof(char), fileSize, file) != fileSize) // read file to buffer
-		exit(2); // read error
-	buffer[fileSize] = '\0'; // end of string
-	int lineCount = 1;
-	for (int i = 0; i < fileSize; i++) {
-		if (buffer[i] == '\n' && i != fileSize - 1)
-			lineCount++;
-	}
-	return lineCount;
+// Add char to the end of char array (string)
+void addCharToString(char* &string, char c, int size = -1) {
+	if (size < 0)
+		size = strlen(string);
+	string = (char*)realloc(string, sizeof(char) * (size + 1));
+	if (string == NULL)
+		exit(1);
+	string[size] = c;
 }
 
 // Initialize GUI
@@ -455,6 +445,15 @@ void Gui::printGameBoard(bool cursor) {
 	printBoard(game.getBoard(), cursor);
 }
 
+/* File lines:
+* 1. Board size
+* 2. Current player
+* 3. Black points
+* 4. White points
+* 5. Board
+* 6. Previous board
+*/
+
 // Save game state to file
 void Gui::saveGame() {
 	createPopup(POPUP_X, POPUP_Y, 5, 22);
@@ -538,7 +537,23 @@ void Gui::loadGame() {
 		getch();
 	}
 	else {
-		int linesCount = countLines(file);
+		char buffer[1]; int line = 0; // buffer size is 1 because we read only one char at a time, don't want to lose any data
+		char* currentString = NULL; int currentStringSize = 0;
+		while (fread(buffer, sizeof *buffer, 1, file) == 1) {
+			char c = buffer[0];
+			if (c == '\r') // skip carriage return
+				continue;
+			else if (c == '\n') {
+				addCharToString(currentString, '\0', currentStringSize);
+				free(currentString);
+				currentString = NULL;
+				currentStringSize = 0;
+				line++;
+			}
+			else {
+				addCharToString(currentString, c, currentStringSize++);
+			}
+		}
 		fclose(file); // close the file
 	}
 	free(filename);
