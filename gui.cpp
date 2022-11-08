@@ -572,7 +572,12 @@ void Gui::loadGame() {
 				line++;
 			}
 			else {
-				addCharToString(currentString, c, currentStringSize++);
+				if (line == 4 || line == 5) { // If loading board, then use this optimized version for fixed string length
+					if(currentStringSize == 0)
+						currentString = (char*)malloc((boardSize*boardSize+1) * sizeof(char));
+					currentString[currentStringSize++] = c;
+				} else 
+					addCharToString(currentString, c, currentStringSize++); // this works without know size, but uses realloc a lot, good for short strings
 			}
 		}
 		fclose(file); // close the file
