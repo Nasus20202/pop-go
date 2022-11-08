@@ -324,6 +324,14 @@
 			blackPoints = points;
 	}
 
+	// Set current player
+	void Game::setCurrentPlayer(const char player) {
+		if (player == BLACK_STATE)
+			isBlacksTurn = true;
+		else if (player == WHITE_STATE)
+			isBlacksTurn = false;
+	}
+
 	// Get pointer to the board object
 	Board* Game::getBoard() {
 		return &board;

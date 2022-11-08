@@ -44,6 +44,7 @@ public:
 	bool checkIfLegalMove(const int x, const int y);
 
 	char getCurrentPlayer();
+	void setCurrentPlayer(const char player);
 	double getPoints(const char color);
 	void setPoints(const char color, const double points = 0);
 	Board* getBoard();

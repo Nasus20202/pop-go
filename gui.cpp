@@ -598,7 +598,7 @@ void Gui::loadGame() {
 			else { // Set game state
 				game.setPoints(BLACK_STATE, blackPoints); game.setPoints(WHITE_STATE, whitePoints);
 				game.setBoard(board); game.setPreviousBoard(prevBoard); x = 0, y = 0;
-				
+				game.setCurrentPlayer(currentPlayer);
 			}
 			// Free the pointers to string
 			free(boardString); free(prevBoardString); free(currentString);
