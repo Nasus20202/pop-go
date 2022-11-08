@@ -538,13 +538,32 @@ void Gui::loadGame() {
 	}
 	else {
 		char buffer[1]; int line = 0; // buffer size is 1 because we read only one char at a time, don't want to lose any data
-		char* currentString = NULL; int currentStringSize = 0;
+		char* currentString = NULL; int currentStringSize = 0, boardSize, blackPoints, whitePoints, memSize; char currentPlayer;
+		char* board = NULL, * prevBoard = NULL;
 		while (fread(buffer, sizeof *buffer, 1, file) == 1) {
 			char c = buffer[0];
 			if (c == '\r') // skip carriage return
 				continue;
 			else if (c == '\n') {
 				addCharToString(currentString, '\0', currentStringSize);
+				switch (line) {
+				case 0: // Line 1 - board size
+					boardSize = stringToInt(currentString); break;
+				case 1: // Line 2 - current player
+					currentPlayer = currentString[0]; break;
+				case 2: // Line 3 - black plaayer points
+					blackPoints = stringToDouble(currentString); break;
+				case 3: // Line 4 - white player points
+					whitePoints = stringToDouble(currentString); break;
+				case 4: // Line 5 - game board
+					memSize = (currentStringSize + 1) * sizeof(char);
+					board = (char*)malloc(memSize);
+					strcpy_s(board, currentStringSize+1, currentString); break;
+				case 5: // Line 6 - previous game board
+					memSize = (currentStringSize + 1) * sizeof(char);
+					prevBoard = (char*)malloc(memSize);
+					strcpy_s(prevBoard, currentStringSize + 1, currentString); break;
+				}
 				free(currentString);
 				currentString = NULL;
 				currentStringSize = 0;
@@ -554,6 +573,9 @@ void Gui::loadGame() {
 				addCharToString(currentString, c, currentStringSize++);
 			}
 		}
+		
+		// Free the pointers to string
+		free(board); free(prevBoard); free(currentString);
 		fclose(file); // close the file
 	}
 	free(filename);
