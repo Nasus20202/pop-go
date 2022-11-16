@@ -186,7 +186,7 @@ void Gui::init() {
 
 void Gui::frame(const char key) {
 	// Pressed key is a special key - arrow
-	if (key == 0) {
+	if (key == ARROW_SPECIAL_KEY) {
 		move();
 	}
 	// Place a new stone
@@ -209,13 +209,13 @@ void Gui::frame(const char key) {
 // Allows to change x and y
 void Gui::move() {
 	switch (getch()) {
-	case 0x48:
+	case ARROW_UP:
 		y--; break;
-	case 0x50:
+	case ARROW_DOWN:
 		y++; break;
-	case 0x4b:
+	case ARROW_LEFT:
 		x--; break;
-	case 0x4d:
+	case ARROW_RIGHT:
 		x++; break;
 	}
 	const int size = game.getBoard()->getSize();
@@ -277,11 +277,11 @@ void Gui::newGame() {
 			cputs("      ");
 		cputs("Dowolna");
 		c = getch(); // choose from menu
-		if (c == 0) {
+		if (c == ARROW_SPECIAL_KEY) {
 			switch (getch()) {
-			case 0x48:
+			case ARROW_UP:
 				option--; break;
-			case 0x50:
+			case ARROW_DOWN:
 				option++; break;
 			}
 			if (option < 0)

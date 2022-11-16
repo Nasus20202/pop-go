@@ -29,6 +29,11 @@
 #define ESC 0x1B
 #define ENTER 0x0D
 #define BACKSPACE 0x08
+#define ARROW_SPECIAL_KEY 0
+#define ARROW_LEFT 0x4b
+#define ARROW_RIGHT 0x4d
+#define ARROW_UP 0x48
+#define ARROW_DOWN 0x50
 // File extension
 #define FILE_EXTENSION ".gos"
 #define MAX_FILE_NAME_LENGTH 32
