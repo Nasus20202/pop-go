@@ -2,7 +2,7 @@
 #include "conio2.h"
 
 // Window title
-#define TITLE "Krzysztof Nasuta, 193328"
+#define TITLE "GO - Krzysztof Nasuta 193328"
 // Menu location
 #define MENU_X 2
 #define MENU_Y 1
