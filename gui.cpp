@@ -361,21 +361,6 @@ void Gui::printBoard(Board* board, bool cursor) {
 		for (int localX = 0; localX < size; localX++) {
 			for (int localY = 0; localY < size; localY++) {
 				textbackground(BACKGROUND); // Background color
-				// Create border
-				if (localX == 0) {
-					textcolor(FOREGROUND);
-					gotoxy(BOARD_X + 2 * localX - 1, BOARD_Y + localY);
-					putch('_');
-				}
-				if (localY == size - 1) {
-					textcolor(FOREGROUND);
-					gotoxy(BOARD_X + 2 * localX, BOARD_Y + localY + 1);
-					cputs("| ");
-				}
-				if (localX == 0 && localY == size - 1) {
-					gotoxy(BOARD_X + 2 * localX - 1, BOARD_Y + localY + 1);
-					putch(' ');
-				}
 				gotoxy(BOARD_X + 2 * localX, BOARD_Y + localY); // Move the cursor to the right position, 2*x for nice output
 				char c = board->get(localY, localX); // get state of field
 				if (c == WHITE_STATE) {
@@ -387,9 +372,9 @@ void Gui::printBoard(Board* board, bool cursor) {
 					putch(' ');
 				}
 				else {
-					textcolor(FOREGROUND); putch('|');
+					textcolor(FOREGROUND); putch(BOARD_CROSS);
 				}
-				gotoxy(BOARD_X + 2 * localX + 1, BOARD_Y + localY); putch('_'); // Stone is 2x1 chars
+				gotoxy(BOARD_X + 2 * localX + 1, BOARD_Y + localY); putch(BOARD_HORIZONTAL_LINE); // Stone is 2x1 chars
 			}
 		}
 		// Print cursor
@@ -424,9 +409,9 @@ void Gui::printBoard(Board* board, bool cursor) {
 					putch(' ');
 				}
 				else {
-					textcolor(FOREGROUND); putch('|');
+					textcolor(FOREGROUND); putch(BOARD_CROSS);
 				}
-				gotoxy(BOARD_X + 2 * (localX - startX) + 1, BOARD_Y + (localY - startY)); putch('_'); // Stone is 2x1 chars
+				gotoxy(BOARD_X + 2 * (localX - startX) + 1, BOARD_Y + (localY - startY)); putch(BOARD_HORIZONTAL_LINE); // Stone is 2x1 chars
 			}
 		}
 		// Print cursor

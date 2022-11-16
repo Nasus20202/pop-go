@@ -40,6 +40,9 @@
 // Limits
 #define INT32_MAX 2147483647
 #define INT32_MIN -2147483648
+// Board chars
+#define BOARD_HORIZONTAL_LINE 196
+#define BOARD_CROSS 197
 
 class Gui
 {
