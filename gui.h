@@ -43,6 +43,12 @@
 // Board chars
 #define BOARD_HORIZONTAL_LINE 196
 #define BOARD_CROSS 197
+// Controls
+#define PLACE_STONE 'i'
+#define NEW_GAME 'n'
+#define LOAD_GAME 'l'
+#define SAVE_GAME 's'
+#define QUIT_GAME 'q'
 
 class Gui
 {

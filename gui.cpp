@@ -173,7 +173,7 @@ void Gui::init() {
 	clrscr();
 	printMenu();
 	char key = -1;
-	while (key != 'q') {
+	while (key != QUIT_GAME) {
 		frame(key);
 		key = getch();
 	}
@@ -190,17 +190,17 @@ void Gui::frame(const char key) {
 		move();
 	}
 	// Place a new stone
-	else if (key == '1') {
+	else if (key == PLACE_STONE) {
 		placeStone();
 	}
 	// Create new game
-	else if (key == 'n')
+	else if (key == NEW_GAME)
 		newGame();
 	// load game
-	else if (key == 'l')
+	else if (key == LOAD_GAME)
 		loadGame();
 	// save game
-	else if (key == 's')
+	else if (key == SAVE_GAME)
 		saveGame();
 	printGameBoard();
 	printStats();
@@ -292,7 +292,7 @@ void Gui::newGame() {
 	}
 	if (option < basicSizesCount)
 		n = basicSizes[option];
-	else {
+	else if(c != ESC) {
 		gotoxy(customInputX, customInputY); cputs("               ");
 		n = numberInput(customInputX + 6, customInputY, FOREGROUND, THEME_COLOR, false, MAX_SIZE, 0);
 	}
@@ -324,7 +324,7 @@ void Gui::printMenu() {
 	}
 	free(menuBackground);
 	const char* info[] = { "Krzysztof Nasuta 193328", "", "q - zakoncz program", "n - nowa gra", "Strzalki - ruch",
-		"1 - wybierz pole", "ENTER - potwierdz pole", "s - zapisz gre", "l - wczytaj gre"}; // Custom info on menu
+		"i - wybierz pole", "ENTER - potwierdz pole", "s - zapisz gre", "l - wczytaj gre"}; // Custom info on menu
 	const int infoCount = 9; // number of elements in that array
 	menuX = MENU_X + 4, menuY = MENU_Y + 3;
 	for (int i = 0; i < infoCount; i++) {
