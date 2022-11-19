@@ -1,5 +1,6 @@
 #include "go.h"
 #include "conio2.h"
+#include <stdio.h>
 
 // Window title
 #define TITLE "GO - Krzysztof Nasuta 193328"
@@ -49,6 +50,15 @@
 #define LOAD_GAME 'l'
 #define SAVE_GAME 's'
 #define QUIT_GAME 'q'
+
+// helper functions
+void reverseString(char* string, int size);
+char* intToString(long long n);
+char* doubleToString(double n, int precision = 2);
+long long stringToInt(const char* string);
+double stringToDouble(const char* string);
+void writeLine(char* line, FILE* file);
+void addCharToString(char*& string, char c, int size = -1);
 
 class Gui
 {

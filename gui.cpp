@@ -33,25 +33,20 @@ char* intToString(long long n) {
 	while (n > 0) {
 		char digit = n % 10 + '0';
 		n /= 10;
-		string = (char*)realloc(string, sizeof(char) * (size+1));
-		if (string == NULL)
-			exit(1);
-		string[size] = digit; size++;
+		addCharToString(string, digit, size);
+		size++;
 	}
 	if (negative) { // Add minus to the beginning of the string
-		string = (char*)realloc(string, sizeof(char) * (size + 1));
-		if (string == NULL)
-			exit(1);
-		string[size] = '-'; size++;
+		addCharToString(string, '-', size);
+		size++;
 	}
 	reverseString(string, size);
-	string = (char*)realloc(string, sizeof(char) * (size + 1));
-	string[size] = '\0';
+	addCharToString(string, '\0', size);
 	return string;
 }
 
 // Represnt double as a char array (string), returned pointer has to be freed, precision is the max number of consecutive zeros in decimal part
-char* doubleToString(double n, int precision = 2) {
+char* doubleToString(double n, int precision) {
 	if (n == 0) {
 		// if c is 0, rest of that function would return empty array of chars
 		char* c = (char*)malloc(sizeof(char) * 2);
@@ -66,41 +61,31 @@ char* doubleToString(double n, int precision = 2) {
 	int integerPart = (int)n;
 	double decimalPart = n - integerPart;
 	if (integerPart == 0) {
-		string = (char*)realloc(string, sizeof(char) * (size + 1));
-		if (string == NULL)
-			exit(1);
-		string[0] = '0'; size++;
+		addCharToString(string, '0', size);
+		size++;
 	}
 	while (integerPart > 0) {
 		char digit = integerPart % 10 + '0';
 		integerPart /= 10;
-		string = (char*)realloc(string, sizeof(char) * (size + 1));
-		if (string == NULL)
-			exit(1);
-		string[size] = digit; size++;
+		addCharToString(string, digit, size);
+		size++;
 	}
 	reverseString(string, size);
 	double eps = 1;
 	for (int i = 0; i < precision; i++)
 		eps /= 10;
 	if (decimalPart > eps) {
-		string = (char*)realloc(string, sizeof(char) * (size + 1));
-		if (string == NULL)
-			exit(1);
-		string[size] = '.'; size++;
+		addCharToString(string, '.', size);
+		size++;
 		while (decimalPart > eps) {
 			char digit = (int)(decimalPart * 10) + '0';
 			decimalPart = decimalPart * 10 - (int)(decimalPart * 10);
-			string = (char*)realloc(string, sizeof(char) * (size + 1));
-			if (string == NULL)
-				exit(1);
-			string[size] = digit; size++;
+			addCharToString(string, digit, size);
+			size++;
 		}
 	}
-	string = (char*)realloc(string, sizeof(char) * (size + 1));
-	if (string == NULL)
-		exit(1);
-	string[size] = '\0'; size += 1;
+	addCharToString(string, '\0', size);
+	size += 1;
 	return string;
 }
 
@@ -154,7 +139,7 @@ void writeLine(char* line, FILE *file) {
 }
 
 // Add char to the end of char array (string)
-void addCharToString(char* &string, char c, int size = -1) {
+void addCharToString(char* &string, char c, int size) {
 	if (size < 0)
 		size = strlen(string);
 	string = (char*)realloc(string, sizeof(char) * (size + 1));
@@ -526,7 +511,7 @@ void Gui::loadGame() {
 	}
 	else {
 		char buffer[1]; int line = 0; // buffer size is 1 because we read only one char at a time, don't want to lose any data
-		char* currentString = NULL; int currentStringSize = 0, boardSize = -1, blackPoints = -1, whitePoints = -1, memSize; char currentPlayer = EMPTY_STATE;
+		char* currentString = NULL; int currentStringSize = 0, boardSize = -1, memSize; double blackPoints = -1, whitePoints = -1; char currentPlayer = EMPTY_STATE;
 		char* boardString = NULL, * prevBoardString = NULL;
 		while (fread(buffer, sizeof *buffer, 1, file) == 1 && !brokenSave) {
 			char c = buffer[0];
