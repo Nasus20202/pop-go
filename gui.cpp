@@ -77,9 +77,11 @@ char* doubleToString(double n, int precision) {
 	if (decimalPart > eps) {
 		addCharToString(string, '.', size);
 		size++;
+		double tempDecimalPart = decimalPart;
 		while (decimalPart > eps) {
-			char digit = (int)(decimalPart * 10) + '0';
-			decimalPart = decimalPart * 10 - (int)(decimalPart * 10);
+			char digit = (int)(tempDecimalPart * 10) + '0';
+			tempDecimalPart = tempDecimalPart * 10 - (int)(tempDecimalPart * 10);
+			decimalPart /= 10;
 			addCharToString(string, digit, size);
 			size++;
 		}
@@ -507,6 +509,7 @@ void Gui::loadGame() {
 			cputs("  Plik nie istnieje ");
 		else
 			cputs("  Nie mozna otworzyc  ");
+		textcolor(FOREGROUND); textbackground(CONSOLE_COLOR);
 		getch();
 	}
 	else {

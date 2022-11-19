@@ -54,7 +54,7 @@
 // helper functions
 void reverseString(char* string, int size);
 char* intToString(long long n);
-char* doubleToString(double n, int precision = 2);
+char* doubleToString(double n, int precision = 1);
 long long stringToInt(const char* string);
 double stringToDouble(const char* string);
 void writeLine(char* line, FILE* file);
