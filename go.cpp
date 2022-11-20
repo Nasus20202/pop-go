@@ -232,7 +232,7 @@
 	// Create and replace board
 	void Game::newBoard(const int size) {
 		board = Board::Board(size), previousBoard = Board::Board(size);
-		isBlacksTurn = true; move = 0;
+		isBlacksTurn = true;
 		whitePoints = BASE_WHITE_POINTS, blackPoints = 0;
 	}
 
@@ -294,7 +294,6 @@
 		board.set(x, y, isBlacksTurn ? BLACK_STATE : WHITE_STATE);
 		isBlacksTurn = !isBlacksTurn;
 		removeDeadNeighbours(x, y);
-		move++;
 		return true;
 	}
 
@@ -349,9 +348,5 @@
 	void Game::setPreviousBoard(const Board& board) {
 		this->previousBoard = board;
 	}
-
-	// Get current move number
-	int Game::getMove() {
-		return move;
-	}
+	
 #pragma endregion

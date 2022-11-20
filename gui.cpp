@@ -187,7 +187,7 @@ void Gui::frame(const char key) {
 	// save game
 	else if (key == SAVE_GAME)
 		saveGame();
-	else if (key == ENTER && gameStateEditor && game.getMove() != 0) {
+	else if (key == ENTER && gameStateEditor && moveId != 0) {
 		gameStateEditor = false; game.setCurrentPlayer(WHITE_STATE); // leave game state editor
 	}
 	printGameBoard();
@@ -227,10 +227,10 @@ void Gui::placeStone() {
 	board.set(y, x, game.getCurrentPlayer());
 	printBoard(&board, false);
 	if (getch() == ENTER) {
-		game.placeStone(y, x);
+		game.placeStone(y, x); moveId++;
 		if (gameStateEditor) {
 			game.setCurrentPlayer(BLACK_STATE);
-			if(game.getMove() > 1) // if handicap is introduced, change white points to 0.5
+			if(moveId > 1) // if handicap is introduced, change white points to 0.5
 				game.setPoints(WHITE_STATE, 0.5);
 		}
 	}
@@ -599,7 +599,7 @@ void Gui::loadGame() {
 			else { // Set game state
 				game.setPoints(BLACK_STATE, blackPoints); game.setPoints(WHITE_STATE, whitePoints);
 				game.setBoard(board); game.setPreviousBoard(prevBoard); x = 0, y = 0;
-				game.setCurrentPlayer(currentPlayer); gameStateEditor = false;
+				game.setCurrentPlayer(currentPlayer); gameStateEditor = false; moveId = 0;
 			}
 			// Free the pointers to string
 			free(boardString); free(prevBoardString); free(currentString);
@@ -713,7 +713,7 @@ void Gui::printDouble(const double n) {
 
 Gui::Gui() {
 	game = Game::Game(DEFAULT_SIZE);
-	x = 0, y = 0; gameStateEditor = true;
+	x = 0, y = 0, moveId = 0; gameStateEditor = true;
 }
 
 Gui::~Gui()

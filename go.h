@@ -32,7 +32,7 @@ public:
 class Game {
 private:
 	Board board, previousBoard;
-	double whitePoints, blackPoints; int move;
+	double whitePoints, blackPoints;
 	bool isBlacksTurn; // Black always go first
 	void removeAllDeadStones(); // Remove all dead stones from the board
 	void removeDeadNeighbours(const int x, const int y); // Remove dead stone touching the stone (x, y)
@@ -53,6 +53,5 @@ public:
 	Board* getPreviousBoard();
 	void setBoard(const Board &board);
 	void setPreviousBoard(const Board& board);
-	int getMove();
 };
 
