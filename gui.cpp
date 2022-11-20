@@ -230,7 +230,7 @@ void Gui::placeStone() {
 		game.placeStone(y, x); moveId++;
 		if (gameStateEditor) {
 			game.setCurrentPlayer(BLACK_STATE);
-			if(moveId > 1) // if handicap is introduced, change white points to 0.5
+			if(moveId > 2) // if handicap is introduced, change white points to 0.5
 				game.setPoints(WHITE_STATE, 0.5);
 		}
 	}
