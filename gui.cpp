@@ -230,7 +230,7 @@ void Gui::placeStone() {
 		game.placeStone(y, x); moveId++;
 		if (gameStateEditor) {
 			game.setCurrentPlayer(BLACK_STATE);
-			if(moveId > 2) // if handicap is introduced, change white points to 0.5
+			if(moveId > 1) // if handicap is introduced, change white points to 0.5
 				game.setPoints(WHITE_STATE, 0.5);
 		}
 	}
@@ -290,7 +290,7 @@ void Gui::newGame() {
 	// If ESC not pressed
 	if (c != ESC && n > 0) { // Check if action wasn't cancelled (n == INT32_MIN)
 		game.newBoard(n);
-		x = 0, y = 0; gameStateEditor = true;
+		x = 0, y = 0, moveId= 0; gameStateEditor = true;
 	}
 	textcolor(FOREGROUND); textbackground(CONSOLE_COLOR);
 	clrscr();
