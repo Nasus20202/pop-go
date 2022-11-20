@@ -173,13 +173,11 @@ void Gui::init() {
 
 void Gui::frame(const char key) {
 	// Pressed key is a special key - arrow
-	if (key == ARROW_SPECIAL_KEY) {
+	if (key == ARROW_SPECIAL_KEY) 
 		move();
-	}
 	// Place a new stone
-	else if (key == PLACE_STONE) {
+	else if (key == PLACE_STONE) 
 		placeStone();
-	}
 	// Create new game
 	else if (key == NEW_GAME)
 		newGame();
@@ -189,6 +187,9 @@ void Gui::frame(const char key) {
 	// save game
 	else if (key == SAVE_GAME)
 		saveGame();
+	else if (key == ENTER && gameStateEditor && game.getMove() != 0) {
+		gameStateEditor = false; game.setCurrentPlayer(WHITE_STATE); // leave game state editor
+	}
 	printGameBoard();
 	printStats();
 }
@@ -219,15 +220,18 @@ void Gui::move() {
 // Allows placing a stone
 void Gui::placeStone() {
 	bool validMove = game.checkIfLegalMove(y, x);
-	if (validMove) {
-		Board board = Board::Board(game.getBoard()->getSize());
-		board = *game.getBoard();
-		board.set(y, x, game.getCurrentPlayer());
-		printBoard(&board, false);
-		char confirm = getch();
-		// Confirmation by clicking enter
-		if (confirm == ENTER) {
-			game.placeStone(y, x);
+	if (!validMove)
+		return;
+	Board board = Board::Board(game.getBoard()->getSize());
+	board = *game.getBoard();
+	board.set(y, x, game.getCurrentPlayer());
+	printBoard(&board, false);
+	if (getch() == ENTER) {
+		game.placeStone(y, x);
+		if (gameStateEditor) {
+			game.setCurrentPlayer(BLACK_STATE);
+			if(game.getMove() > 1) // if handicap is introduced, change white points to 0.5
+				game.setPoints(WHITE_STATE, 0.5);
 		}
 	}
 }
@@ -286,7 +290,7 @@ void Gui::newGame() {
 	// If ESC not pressed
 	if (c != ESC && n > 0) { // Check if action wasn't cancelled (n == INT32_MIN)
 		game.newBoard(n);
-		x = 0, y = 0;
+		x = 0, y = 0; gameStateEditor = true;
 	}
 	textcolor(FOREGROUND); textbackground(CONSOLE_COLOR);
 	clrscr();
@@ -329,14 +333,24 @@ void Gui::printStats() {
 		cputs("   Gracz: Czarny");
 	else
 		cputs("   Gracz: Bialy ");
+	gotoxy(STATS_X - 4, STATS_Y + 1);
+	if (gameStateEditor) { // print that game state editor is active
+		textcolor(FOREGROUND);
+		cputs("Zakoncz edycje stanu - ENTER");
+		textcolor(CONSOLE_COLOR);
+	}
+	else {
+		for (int i = 0; i < MENU_WIDTH - 1; i++)
+			putch(' '); // clear space
+	}
 	gotoxy(STATS_X, STATS_Y+2);
 	for (int i = 0; i < MENU_WIDTH - 5; i++)
-		cputs(" "); // Clear space for points
+		putch(' ');; // Clear space for points
 	gotoxy(STATS_X, STATS_Y + 2);
 	cputs("Czarny: "); printDouble(game.getPoints(BLACK_STATE)); cputs("  Bialy: "); printDouble(game.getPoints(WHITE_STATE));
 	gotoxy(STATS_X, STATS_Y + 4);
 	for (int i = 0; i < MENU_WIDTH - 5; i++)
-		cputs(" "); // Clear space for coors
+		putch(' ');; // Clear space for coors
 	gotoxy(STATS_X, STATS_Y + 4);
 	cputs("   X: "); printInt(x); cputs("   Y: "); printInt(y);
 }
@@ -585,7 +599,7 @@ void Gui::loadGame() {
 			else { // Set game state
 				game.setPoints(BLACK_STATE, blackPoints); game.setPoints(WHITE_STATE, whitePoints);
 				game.setBoard(board); game.setPreviousBoard(prevBoard); x = 0, y = 0;
-				game.setCurrentPlayer(currentPlayer);
+				game.setCurrentPlayer(currentPlayer); gameStateEditor = false;
 			}
 			// Free the pointers to string
 			free(boardString); free(prevBoardString); free(currentString);
@@ -699,7 +713,7 @@ void Gui::printDouble(const double n) {
 
 Gui::Gui() {
 	game = Game::Game(DEFAULT_SIZE);
-	x = 0, y = 0;
+	x = 0, y = 0; gameStateEditor = true;
 }
 
 Gui::~Gui()

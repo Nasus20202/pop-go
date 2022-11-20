@@ -64,7 +64,7 @@ class Gui
 {
 private:
 	Game game;
-	int x, y;
+	int x, y; bool gameStateEditor;
 	// All function avaiable for the user
 	void move(); // Allows changing x and y
 	void placeStone(); // Allows placing a stone

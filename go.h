@@ -53,5 +53,6 @@ public:
 	Board* getPreviousBoard();
 	void setBoard(const Board &board);
 	void setPreviousBoard(const Board& board);
+	int getMove();
 };
 

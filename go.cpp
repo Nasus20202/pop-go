@@ -224,7 +224,7 @@
 		// No liberties for that stone
 		if (tempBoard.countLiberties(x, y) == 0)
 			return false;
-		if (move != 0 && tempBoard == previousBoard) // Force ko rule, if the board is the same as previous board, it's illegal (except of first turn)
+		if (tempBoard == previousBoard) // Force ko rule, if the board is the same as previous board, it's illegal (except of first turn)
 			return false;
 		return true;
 	}
@@ -232,7 +232,7 @@
 	// Create and replace board
 	void Game::newBoard(const int size) {
 		board = Board::Board(size), previousBoard = Board::Board(size);
-		isBlacksTurn = true;
+		isBlacksTurn = true; move = 0;
 		whitePoints = BASE_WHITE_POINTS, blackPoints = 0;
 	}
 
@@ -350,4 +350,8 @@
 		this->previousBoard = board;
 	}
 
+	// Get current move number
+	int Game::getMove() {
+		return move;
+	}
 #pragma endregion
