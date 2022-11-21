@@ -514,11 +514,11 @@ void Gui::loadGame() {
 		printMenu(); // clear popup
 		return;
 	}
-	const int totalFileNameSize = strlen(filename) + strlen(FILE_EXTENSION) + 1;
-	filename = (char*)realloc(filename, totalFileNameSize * sizeof(char));
+	const int totalFileNameSize = (strlen(filename) + strlen(FILE_EXTENSION) + 1) * sizeof(char);
+	filename = (char*)realloc(filename, totalFileNameSize);
 	if (filename == NULL)
 		exit(1);
-	strcat_s(filename, totalFileNameSize * sizeof(char), (char*)FILE_EXTENSION); // Add extension to filename
+	strcat_s(filename, totalFileNameSize, (char*)FILE_EXTENSION); // Add extension to filename
 	FILE* file; int errorCode; bool brokenSave = false;
 	if ((errorCode = fopen_s(&file, filename, "rb")) != 0) { // open in binary read mode
 		gotoxy(POPUP_X + 1, POPUP_Y + 3);
@@ -526,7 +526,7 @@ void Gui::loadGame() {
 		if (errorCode == 2) // code 2 - file doesn't exits
 			cputs("  Plik nie istnieje ");
 		else
-			cputs("  Nie mozna otworzyc  ");
+			cputs(" Nie mozna otworzyc ");
 		textcolor(FOREGROUND); textbackground(CONSOLE_COLOR);
 		getch();
 	}
