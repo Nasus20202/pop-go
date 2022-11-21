@@ -1,3 +1,4 @@
+#pragma once
 class Tests {
 private:
 	void placeStones0();

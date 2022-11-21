@@ -79,7 +79,7 @@ char* doubleToString(double n, int precision) {
 		size++;
 		double tempDecimalPart = decimalPart;
 		while (decimalPart > eps) {
-			char digit = (int)(tempDecimalPart * 10) + '0';
+			char digit = (char)(tempDecimalPart * 10) + '0';
 			tempDecimalPart = tempDecimalPart * 10 - (int)(tempDecimalPart * 10);
 			decimalPart /= 10;
 			addCharToString(string, digit, size);
@@ -162,7 +162,7 @@ void Gui::init() {
 	char key = -1;
 	while (key != QUIT_GAME) {
 		frame(key);
-		key = getch();
+		key = (char) getch();
 	}
 	// Restore console output style
 	_setcursortype(_NORMALCURSOR);
@@ -238,9 +238,9 @@ void Gui::placeStone() {
 
 // Allows to start a new game
 void Gui::newGame() {
-	char option = 0, c = 0; int n;
+	char option = 0, c = 0; int n = 0;
 	char basicSizes[] = { 9, 13, 19 }; // basic sizes of board
-	int basicSizesCount = sizeof(basicSizes) / sizeof(char); int customInputX, customInputY; // For custom number input location
+	char basicSizesCount = sizeof(basicSizes) / sizeof(char); int customInputX = 0, customInputY = 0; // For custom number input location
 	// Wait for enter or esc
 	while (c != ENTER && c != ESC) {
 		// Create popup for user to choose size 
@@ -267,7 +267,7 @@ void Gui::newGame() {
 		else
 			cputs("      ");
 		cputs("Dowolna");
-		c = getch(); // choose from menu
+		c = (char) getch(); // choose from menu
 		if (c == ARROW_SPECIAL_KEY) {
 			switch (getch()) {
 			case ARROW_UP:
@@ -514,7 +514,11 @@ void Gui::loadGame() {
 		printMenu(); // clear popup
 		return;
 	}
-	strcat_s(filename, MAX_FILE_NAME_LENGTH, (char*)FILE_EXTENSION); // Add extension to filename
+	const int totalFileNameSize = strlen(filename) + strlen(FILE_EXTENSION) + 1;
+	filename = (char*)realloc(filename, totalFileNameSize * sizeof(char));
+	if (filename == NULL)
+		exit(1);
+	strcat_s(filename, totalFileNameSize * sizeof(char), (char*)FILE_EXTENSION); // Add extension to filename
 	FILE* file; int errorCode; bool brokenSave = false;
 	if ((errorCode = fopen_s(&file, filename, "rb")) != 0) { // open in binary read mode
 		gotoxy(POPUP_X + 1, POPUP_Y + 3);
@@ -538,7 +542,7 @@ void Gui::loadGame() {
 				addCharToString(currentString, '\0', currentStringSize);
 				switch (line) {
 				case 0: // Line 1 - board size
-					boardSize = stringToInt(currentString); break;
+					boardSize = (int) stringToInt(currentString); break;
 				case 1: // Line 2 - current player
 					currentPlayer = currentString[0]; break;
 				case 2: // Line 3 - black plaayer points
@@ -582,15 +586,15 @@ void Gui::loadGame() {
 			Board board = Board::Board(boardSize), prevBoard = Board::Board(boardSize);
 			int iterator = 0;
 			while (boardString[iterator] != '\0' && prevBoardString[iterator] != '\0') {
-				int x = iterator / boardSize, y = iterator % boardSize; char c = boardString[iterator], prevC = prevBoardString[iterator];
+				int localX = iterator / boardSize, localY = iterator % boardSize; char c = boardString[iterator], prevC = prevBoardString[iterator];
 				if (c == BLACK_STATE || c == WHITE_STATE)
-					board.set(x, y, c);
+					board.set(localX, localY, c);
 				else
-					board.set(x, y, EMPTY_STATE); // if char is not BLACK_STATE or WHITE_STATE then it's empty (or broken)
+					board.set(localX, localY, EMPTY_STATE); // if char is not BLACK_STATE or WHITE_STATE then it's empty (or broken)
 				if (prevC == BLACK_STATE || prevC == WHITE_STATE)
-					prevBoard.set(x, y, prevC);
+					prevBoard.set(localX, localY, prevC);
 				else
-					prevBoard.set(x, y, EMPTY_STATE);
+					prevBoard.set(localX, localY, EMPTY_STATE);
 				iterator++;
 			}
 			if (iterator != boardSize * boardSize) { // Game save is broken
@@ -617,12 +621,12 @@ void Gui::loadGame() {
 	printMenu(); // clear popup
 }
 
-void Gui::createPopup(const int x, const int y, const int height, const int width) {
+void Gui::createPopup(const int popupX, const int popupY, const int height, const int width) {
 	textbackground(THEME_COLOR);
 	textcolor(FOREGROUND);
 	for (int i = 0; i < width; i++) {
 		for (int j = 0; j < height; j++) {
-			gotoxy(x + i, y + j); putch(' ');
+			gotoxy(popupX + i, popupY + j); putch(' ');
 		}
 	}
 	textcolor(FOREGROUND);
@@ -630,7 +634,7 @@ void Gui::createPopup(const int x, const int y, const int height, const int widt
 }
 
 // Create input for a number, return INT32_MIN if esc pressed
-int Gui::numberInput(const int x, const int y, const char fontColor, const char backgroundColor, const bool negative, const int maxValue, const int minValue) {
+int Gui::numberInput(const int inputX, const int inputY, const char fontColor, const char backgroundColor, const bool negative, const int maxValue, const int minValue) {
 	textcolor(fontColor); textbackground(backgroundColor);
 	int maxLength = 0, temp = maxValue, n = 0; char c = 0;
 	if (-minValue > maxValue)
@@ -641,12 +645,12 @@ int Gui::numberInput(const int x, const int y, const char fontColor, const char 
 	}
 	maxLength += negative; // Need space for '-'
 	while (c != ENTER || n < minValue || n > maxValue) {
-		gotoxy(x, y);
+		gotoxy(inputX, inputY);
 		for (int i = 0; i < maxLength; i++)
 			cputs(" ");
-		gotoxy(x, y);
+		gotoxy(inputX, inputY);
 		printInt(n);
-		c = getch();
+		c = (char) getch();
 		if (c == BACKSPACE)
 			n /= 10; // backspace
 		else if (c == ESC)
@@ -665,7 +669,7 @@ int Gui::numberInput(const int x, const int y, const char fontColor, const char 
 }
 
 // Create input for a string, returns empty string if action cancelled
-char* Gui::stringInput(const int x, const int y, const char fontColor, const char backgroundColor, const int printLength, const int maxLength) {
+char* Gui::stringInput(const int inputX, const int inputY, const char fontColor, const char backgroundColor, const int printLength, const int maxLength) {
 	textcolor(fontColor); textbackground(backgroundColor);
 	char c = 0, * string = NULL; int size = 0;
 	string = (char*) malloc((maxLength + 1) * sizeof(char));
@@ -673,15 +677,15 @@ char* Gui::stringInput(const int x, const int y, const char fontColor, const cha
 		exit(1); // allocation error
 	while (c != ENTER) {
 		string[size] = '\0'; // end of string
-		gotoxy(x, y);
+		gotoxy(inputX, inputY);
 		for (int i = 0; i < printLength; i++)
 			cputs(" ");
-		gotoxy(x, y);
+		gotoxy(inputX, inputY);
 		for (int i = size-printLength; i < size; i++) { // print only last printLength characters
 			if (i >= 0)
 				putch(string[i]);
 		}
-		c = getch();
+		c = (char) getch();
 		if (c == BACKSPACE) {
 			size = size > 0 ? size - 1 : size; // backspace, removes one char of size
 		}

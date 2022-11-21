@@ -68,7 +68,7 @@
 
 	// Recursive function for counting liberties, marks every liberty as 1 in visited array
 	void Board::recursiveLiberties(const int x, const int y, char color, char* visited) {
-		int size = getSize(); int index = x * size + y;
+		int index = x * size + y;
 		if (x < 0 || x > size - 1 || y < 0 || y > size - 1) // Check if the field is on the board
 			return;
 		if (visited[index] != 0)
@@ -128,17 +128,16 @@
 				char* visited = (char*)malloc(size * size * sizeof(char)); // Allocate memory for visited array
 				if (visited == NULL) // If the allocation failed
 					exit(1);
-				for (int i = 0; i < size * size; i++) // 0 - unvisited, -1 - other color, 1 - free, 2 - same color;
-					visited[i] = 0;
+				for (int k = 0; k < size * size; k++) // 0 - unvisited, -1 - other color, 1 - free, 2 - same color;
+					visited[k] = 0;
 				recursiveLiberties(i, j, get(i, j), visited); int libertiesCount = 0;
-				for (int i = 0; i < size * size; i++) {
-					int a = visited[i];
-					if (visited[i] == 1)
+				for (int k = 0; k < size * size; k++) {
+					if (visited[k] == 1)
 						libertiesCount++;
 				}
-				for (int i = 0; i < size * size; i++) {
-					if (visited[i] == 2)
-						liberties[i] = libertiesCount;
+				for (int k = 0; k < size * size; k++) {
+					if (visited[k] == 2)
+						liberties[k] = libertiesCount;
 				}
 				free(visited);
 			}
@@ -340,13 +339,13 @@
 	}
 
 	// Update board
-	void Game::setBoard(const Board &board) {
-		this->board = board;
+	void Game::setBoard(const Board &newBoard) {
+		this->board = newBoard;
 	}
 
 	// Update previous board
-	void Game::setPreviousBoard(const Board& board) {
-		this->previousBoard = board;
+	void Game::setPreviousBoard(const Board& newPreviousBoard) {
+		this->previousBoard = newPreviousBoard;
 	}
 	
 #pragma endregion

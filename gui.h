@@ -1,6 +1,7 @@
+#pragma once
 #include "go.h"
-#include "conio2.h"
 #include <stdio.h>
+#include "conio2.h"
 
 // Window title
 #define TITLE "GO - Krzysztof Nasuta 193328"
@@ -40,7 +41,7 @@
 #define MAX_FILE_NAME_LENGTH 32
 // Limits
 #define INT32_MAX 2147483647
-#define INT32_MIN -2147483648
+#define INT32_MIN -2147483647
 // Board chars
 #define BOARD_HORIZONTAL_LINE 196
 #define BOARD_CROSS 197
