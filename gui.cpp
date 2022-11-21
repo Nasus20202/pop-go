@@ -456,7 +456,11 @@ void Gui::saveGame() {
 		printMenu(); // clear popup
 		return;
 	}
-	strcat_s(filename, MAX_FILE_NAME_LENGTH, (char*)FILE_EXTENSION); // Add extension to filename
+	const int totalFileNameSize = (strlen(filename) + strlen(FILE_EXTENSION) + 1) * sizeof(char);
+	filename = (char*)realloc(filename, totalFileNameSize);
+	if (filename == NULL)
+		exit(1);
+	strcat_s(filename, totalFileNameSize, (char*)FILE_EXTENSION); // Add extension to filename
 	FILE* file;
 	if (fopen_s(&file, filename, "w") != 0) {
 		gotoxy(POPUP_X + 1, POPUP_Y + 3);
