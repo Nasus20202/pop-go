@@ -315,8 +315,8 @@ void Gui::printMenu() {
 	}
 	free(menuBackground);
 	const char* info[] = { "Krzysztof Nasuta 193328", "", "q - zakoncz program", "n - nowa gra", "Strzalki - ruch",
-		"i - wybierz pole", "ENTER - potwierdz pole", "s - zapisz gre", "l - wczytaj gre"}; // Custom info on menu
-	const int infoCount = 9; // number of elements in that array
+		"i - wybierz pole", "ENTER - potwierdz pole", "s - zapisz gre", "l - wczytaj gre", "Funkcjonalnosci: a-k"}; // Custom info on menu
+	const int infoCount = 10; // number of elements in that array
 	menuX = MENU_X + 4, menuY = MENU_Y + 3;
 	for (int i = 0; i < infoCount; i++) {
 		gotoxy(menuX, menuY++);
