@@ -355,9 +355,9 @@ void Gui::printStats() {
 	cputs("   X: "); printInt(x); cputs("   Y: "); printInt(y);
 }
 
-void Gui::printEmptyBoard(const int size, const int x, const int y) {
+void Gui::printEmptyBoard(const int size, const int boardX, const int boardY) {
 	for (int j = 0; j < size; j++) {
-		gotoxy(x, y + j);
+		gotoxy(boardX, boardY + j);
 		char* line = (char*)malloc((size * 2 + 1) * sizeof(char));
 		if (line == NULL)
 			exit(1); // allocation error
