@@ -17,8 +17,6 @@
 // Board location
 #define BOARD_X 40
 #define BOARD_Y 2
-// Max board size without scrolling
-#define BOARD_SIZE 27
 // Colors
 #define BACKGROUND DARKGRAY
 #define FOREGROUND BLACK
@@ -74,6 +72,7 @@ private:
 	// All functions that are used to draw the GUI
 	void printMenu(); // Print static menu
 	void printStats(); // Prints points and turn
+	void printEmptyBoard(const int size, const int x = 0, const int y = 0); // Prints empty board
 	void printBoard(Board* board, bool cursor = true); // Print any board
 	void printGameBoard(bool cursor = true); // Print board of game object
 	void saveGame(); // Save game state from file
